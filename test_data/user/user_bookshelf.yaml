@@ -1,0 +1,73 @@
+# 用户书架管理测试数据
+# 对应 TestUserBookshelf 测试类
+
+test_cases:
+  # 查询小说是否在书架接口测试
+  query_is_in_shelf:
+    id: "TR_USER_017"
+    title: "查询小说是否在书架接口测试"
+    description: "测试查询小说是否在书架接口"
+    request:
+      method: "GET"
+      endpoint: "/user/queryIsInShelf"
+      params:
+        bookId: 1
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks: []
+    tags: ["user", "bookshelf", "auth", "smoke"]
+    auth_required: true
+
+  # 加入书架接口测试
+  add_to_bookshelf:
+    id: "TR_USER_018"
+    title: "加入书架接口测试"
+    description: "测试加入书架接口"
+    request:
+      method: "POST"
+      endpoint: "/user/addToBookShelf"
+      data:
+        bookId: 1
+        preContentId: 1
+    expected:
+      code: "200"
+      data_checks: []
+    tags: ["user", "bookshelf", "auth", "smoke"]
+    auth_required: true
+
+  # 移出书架接口测试
+  remove_from_bookshelf:
+    id: "TR_USER_019"
+    title: "移出书架接口测试"
+    description: "测试移出书架接口"
+    request:
+      method: "DELETE"
+      endpoint: "/user/removeFromBookShelf/{bookId}"
+      path_params:
+        bookId: 1
+    expected:
+      code: "200"
+      data_checks: []
+    tags: ["user", "bookshelf", "auth", "smoke"]
+    auth_required: true
+
+  # 分页查询书架接口测试
+  list_bookshelf_by_page:
+    id: "TR_USER_020"
+    title: "分页查询书架接口测试"
+    description: "测试分页查询书架接口"
+    request:
+      method: "GET"
+      endpoint: "/user/listBookShelfByPage"
+      params:
+        page: 1
+        pageSize: 10
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "书架列表不应为空"
+    tags: ["user", "bookshelf", "auth", "smoke"]
+    auth_required: true

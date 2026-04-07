@@ -1,0 +1,244 @@
+# 用户登录测试数据
+# 对应 TestUserLogin 测试类
+
+test_cases:
+  # 正常账号登录测试
+  normal_login:
+    id: "TR_USER_001"
+    title: "正常账号登录测试"
+    description: "验证输入正确的手机号/密码，是否返回有效Token"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18723968509"
+        password: "zxcvbnm."
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "token"
+          description: "响应中应包含token字段"
+    tags: ["user", "login", "smoke"]
+    auth_required: false
+
+  # 错误密码登录测试
+  wrong_password_login:
+    id: "TR_USER_002"
+    title: "错误密码登录测试"
+    description: "验证输入错误密码时，是否返回错误状态码"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18723968509"
+        password: "wrongpassword123"
+    expected:
+      code: "!200"  # 表示不应该为200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["账号", "密码", "错误"]
+          description: "响应消息应包含账号或密码错误提示"
+    tags: ["user", "login", "negative"]
+    auth_required: false
+
+  # 10位手机号格式校验测试
+  invalid_phone_10_digits:
+    id: "TR_USER_003"
+    title: "10位手机号格式校验测试"
+    description: "验证输入10位手机号时，是否被拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "1234567890"
+        password: "anypassword"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # 12位手机号格式校验测试
+  invalid_phone_12_digits:
+    id: "TR_USER_004"
+    title: "12位手机号格式校验测试"
+    description: "验证输入12位手机号时，是否被拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "123456789012"
+        password: "anypassword"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # 包含字母的手机号格式校验测试
+  invalid_phone_with_letter:
+    id: "TR_USER_005"
+    title: "包含字母的手机号格式校验测试"
+    description: "验证输入包含字母的手机号时，是否被拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "1234567890a"
+        password: "anypassword"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # 包含特殊字符的手机号格式校验测试
+  invalid_phone_with_special_chars:
+    id: "TR_USER_006"
+    title: "包含特殊字符的手机号格式校验测试"
+    description: "验证输入包含特殊字符的手机号时，是否被拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "123-456-7890"
+        password: "anypassword"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # 空手机号格式校验测试
+  invalid_phone_empty:
+    id: "TR_USER_007"
+    title: "空手机号格式校验测试"
+    description: "验证输入空手机号时，是否被拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: ""
+        password: "anypassword"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # 不存在用户登录测试
+  nonexistent_user_login:
+    id: "TR_USER_008"
+    title: "不存在用户登录测试"
+    description: "验证输入不存在的手机号时，是否返回用户不存在的错误"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18888888888"
+        password: "anypassword"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "negative"]
+    auth_required: false
+
+  # 空密码登录测试
+  empty_password_login:
+    id: "TR_USER_009"
+    title: "空密码登录测试"
+    description: "验证输入空密码时，是否拦截并提示密码不能为空"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18723968509"
+        password: ""
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # 空用户名登录测试
+  empty_username_login:
+    id: "TR_USER_010"
+    title: "空用户名登录测试"
+    description: "验证输入空用户名时，是否拦截并提示用户名不能为空"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: ""
+        password: "zxcvbnm."
+    expected:
+      code: "!200"
+    tags: ["user", "login", "validation", "negative"]
+    auth_required: false
+
+  # SQL注入尝试测试 - 案例1
+  sql_injection_attempt_1:
+    id: "TR_USER_011"
+    title: "SQL注入尝试测试 - OR 1=1"
+    description: "验证输入SQL注入payload时，是否被安全拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "' OR '1'='1"
+        password: "' OR '1'='1"
+    expected:
+      code: "!200"
+      data_checks:
+        - check_type: "response_message_not_contains"
+          keywords: ["sql", "syntax", "database"]
+          description: "响应消息不应包含SQL错误信息"
+    tags: ["user", "login", "security", "negative"]
+    auth_required: false
+
+  # SQL注入尝试测试 - 案例2
+  sql_injection_attempt_2:
+    id: "TR_USER_012"
+    title: "SQL注入尝试测试 - 注释符"
+    description: "验证输入SQL注入payload时，是否被安全拦截"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "' OR '1'='1' --"
+        password: "' OR '1'='1' --"
+    expected:
+      code: "!200"
+      data_checks:
+        - check_type: "response_message_not_contains"
+          keywords: ["sql", "syntax", "database"]
+          description: "响应消息不应包含SQL错误信息"
+    tags: ["user", "login", "security", "negative"]
+    auth_required: false
+
+  # XSS尝试测试 - 案例1
+  xss_attempt_1:
+    id: "TR_USER_013"
+    title: "XSS尝试测试 - script标签"
+    description: "验证输入XSS payload时，是否被安全过滤"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "<script>alert('xss')</script>"
+        password: "<script>alert('xss')</script>"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "security", "negative"]
+    auth_required: false
+
+  # XSS尝试测试 - 案例2
+  xss_attempt_2:
+    id: "TR_USER_014"
+    title: "XSS尝试测试 - img标签"
+    description: "验证输入XSS payload时，是否被安全过滤"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "'><img src=x onerror=alert(1)>"
+        password: "'><img src=x onerror=alert(1)>"
+    expected:
+      code: "!200"
+    tags: ["user", "login", "security", "negative"]
+    auth_required: false

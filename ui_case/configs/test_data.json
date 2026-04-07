@@ -1,0 +1,387 @@
+{
+    "users": {
+        "valid_user": {
+            "phone": "13800138000",
+            "password": "123456",
+            "nickname": "测试用户"
+        },
+        "invalid_users": [
+            {
+                "phone": "1380013800",
+                "password": "123456",
+                "description": "手机号格式错误"
+            },
+            {
+                "phone": "",
+                "password": "123456",
+                "description": "手机号为空"
+            },
+            {
+                "phone": "13800138000",
+                "password": "",
+                "description": "密码为空"
+            },
+            {
+                "phone": "13800138000",
+                "password": "wrongpass",
+                "description": "密码错误"
+            }
+        ]
+    },
+    "test_cases": {
+        "login": {
+            "normal_login": {
+                "phone": "13800138000",
+                "password": "123456",
+                "expected_result": "登录成功",
+                "priority": "高",
+                "description": "正常登录流程验证"
+            },
+            "wrong_password": {
+                "phone": "13800138000",
+                "password": "12345678",
+                "expected_result": "账号或密码错误",
+                "priority": "高",
+                "description": "错误密码提示验证"
+            },
+            "invalid_phone": {
+                "phone": "1380013800",
+                "password": "123456",
+                "expected_result": "手机号格式不正确",
+                "priority": "中",
+                "description": "手机号前端校验"
+            },
+            "empty_phone": {
+                "phone": "",
+                "password": "123456",
+                "expected_result": "手机号/密码不能为空",
+                "priority": "高",
+                "description": "空值前端校验 - 手机号为空"
+            },
+            "empty_password": {
+                "phone": "13800138000",
+                "password": "",
+                "expected_result": "手机号/密码不能为空",
+                "priority": "高",
+                "description": "空值前端校验 - 密码为空"
+            }
+        },
+        "reading": {
+            "bookshelf_to_reading": {
+                "book_id": "1",
+                "expected_result": "页面跳转至阅读器界面",
+                "priority": "高",
+                "description": "从书架进入阅读页验证"
+            },
+            "detail_to_reading": {
+                "book_id": "1",
+                "expected_result": "页面跳转至阅读器界面",
+                "priority": "高",
+                "description": "从详情页进入阅读页验证"
+            },
+            "next_chapter": {
+                "expected_result": "内容切换至下一章节",
+                "priority": "高",
+                "description": "下一章切换验证"
+            },
+            "previous_chapter": {
+                "expected_result": "内容返回第一章节",
+                "priority": "高",
+                "description": "上一章切换验证"
+            },
+            "catalog_navigation": {
+                "chapter_index": 5,
+                "expected_result": "点击后跳转至对应章节",
+                "priority": "高",
+                "description": "目录跳转验证"
+            },
+            "font_size_adjustment": {
+                "sizes": ["small", "medium", "large", "xlarge"],
+                "expected_result": "阅读区文字实时缩放",
+                "priority": "中",
+                "description": "字体大小调整验证"
+            },
+            "theme_switching": {
+                "themes": ["day", "night", "eye_protection"],
+                "expected_result": "背景色正确变更",
+                "priority": "中",
+                "description": "主题切换验证"
+            },
+            "comment_entry": {
+                "expected_result": "跳转至评论页面",
+                "priority": "中",
+                "description": "评论入口验证"
+            },
+            "continue_reading": {
+                "chapter_number": 5,
+                "expected_result": "跳转至上次阅读的第5章",
+                "priority": "中",
+                "description": "继续阅读验证"
+            },
+            "page_scrolling": {
+                "scroll_amount": 500,
+                "expected_result": "内容平滑滚动",
+                "priority": "高",
+                "description": "页面滚动阅读验证"
+            }
+        }
+    },
+    "page_elements": {
+        "login_page": {
+            "phone_input": {
+                "locator_type": "id",
+                "locator_value": "phone_input",
+                "description": "手机号输入框"
+            },
+            "password_input": {
+                "locator_type": "id",
+                "locator_value": "password_input",
+                "description": "密码输入框"
+            },
+            "login_button": {
+                "locator_type": "id",
+                "locator_value": "login_button",
+                "description": "登录按钮"
+            },
+            "error_message": {
+                "locator_type": "class",
+                "locator_value": "error_message",
+                "description": "错误提示信息"
+            },
+            "phone_format_error": {
+                "locator_type": "id",
+                "locator_value": "phone_format_error",
+                "description": "手机号格式错误提示"
+            },
+            "empty_validation_error": {
+                "locator_type": "id",
+                "locator_value": "empty_validation_error",
+                "description": "空值校验错误提示"
+            },
+            "user_nickname": {
+                "locator_type": "id",
+                "locator_value": "user_nickname",
+                "description": "用户昵称显示区域"
+            }
+        },
+        "bookshelf_page": {
+            "read_button": {
+                "locator_type": "css",
+                "locator_value": ".read-button",
+                "description": "阅读按钮"
+            },
+            "continue_reading_button": {
+                "locator_type": "css",
+                "locator_value": ".continue-reading-button",
+                "description": "继续阅读按钮"
+            },
+            "book_item": {
+                "locator_type": "class",
+                "locator_value": "book-item",
+                "description": "小说列表项"
+            },
+            "book_title": {
+                "locator_type": "class",
+                "locator_value": "book-title",
+                "description": "小说标题"
+            },
+            "empty_bookshelf": {
+                "locator_type": "class",
+                "locator_value": "empty-bookshelf",
+                "description": "书架空状态提示"
+            }
+        },
+        "book_detail_page": {
+            "start_reading_button": {
+                "locator_type": "id",
+                "locator_value": "start-reading-button",
+                "description": "开始阅读按钮"
+            },
+            "book_title": {
+                "locator_type": "class",
+                "locator_value": "book-detail-title",
+                "description": "小说标题"
+            },
+            "author_info": {
+                "locator_type": "class",
+                "locator_value": "author-info",
+                "description": "作者信息"
+            },
+            "book_category": {
+                "locator_type": "class",
+                "locator_value": "book-category",
+                "description": "小说分类"
+            },
+            "book_description": {
+                "locator_type": "class",
+                "locator_value": "book-description",
+                "description": "小说简介"
+            },
+            "chapter_list": {
+                "locator_type": "class",
+                "locator_value": "chapter-list",
+                "description": "章节列表"
+            },
+            "chapter_item": {
+                "locator_type": "class",
+                "locator_value": "chapter-item",
+                "description": "章节项"
+            },
+            "read_count": {
+                "locator_type": "class",
+                "locator_value": "read-count",
+                "description": "阅读人数"
+            }
+        },
+        "reader_page": {
+            "next_chapter_button": {
+                "locator_type": "class",
+                "locator_value": "next-chapter-button",
+                "description": "下一章按钮"
+            },
+            "previous_chapter_button": {
+                "locator_type": "class",
+                "locator_value": "previous-chapter-button",
+                "description": "上一章按钮"
+            },
+            "catalog_button": {
+                "locator_type": "class",
+                "locator_value": "catalog-button",
+                "description": "目录按钮"
+            },
+            "settings_button": {
+                "locator_type": "class",
+                "locator_value": "settings-button",
+                "description": "设置按钮"
+            },
+            "theme_switch_button": {
+                "locator_type": "class",
+                "locator_value": "theme-switch-button",
+                "description": "主题切换按钮"
+            },
+            "comment_icon": {
+                "locator_type": "class",
+                "locator_value": "comment-icon",
+                "description": "评论图标"
+            },
+            "chapter_title": {
+                "locator_type": "class",
+                "locator_value": "chapter-title",
+                "description": "章节标题"
+            },
+            "content_area": {
+                "locator_type": "id",
+                "locator_value": "content-area",
+                "description": "阅读内容区域"
+            },
+            "catalog_panel": {
+                "locator_type": "class",
+                "locator_value": "catalog-panel",
+                "description": "目录面板"
+            },
+            "catalog_chapter_item": {
+                "locator_type": "class",
+                "locator_value": "catalog-chapter-item",
+                "description": "目录章节项"
+            },
+            "current_chapter_highlight": {
+                "locator_type": "class",
+                "locator_value": "current-chapter",
+                "description": "当前章节高亮"
+            },
+            "settings_panel": {
+                "locator_type": "class",
+                "locator_value": "settings-panel",
+                "description": "设置面板"
+            },
+            "font_size_small": {
+                "locator_type": "class",
+                "locator_value": "font-size-small",
+                "description": "小字体"
+            },
+            "font_size_medium": {
+                "locator_type": "class",
+                "locator_value": "font-size-medium",
+                "description": "中字体"
+            },
+            "font_size_large": {
+                "locator_type": "class",
+                "locator_value": "font-size-large",
+                "description": "大字体"
+            },
+            "font_size_xlarge": {
+                "locator_type": "class",
+                "locator_value": "font-size-xlarge",
+                "description": "特大字体"
+            },
+            "theme_day": {
+                "locator_type": "class",
+                "locator_value": "theme-day",
+                "description": "日间模式"
+            },
+            "theme_night": {
+                "locator_type": "class",
+                "locator_value": "theme-night",
+                "description": "夜间模式"
+            },
+            "theme_eye_protection": {
+                "locator_type": "class",
+                "locator_value": "theme-eye-protection",
+                "description": "护眼模式"
+            },
+            "reading_progress": {
+                "locator_type": "class",
+                "locator_value": "reading-progress",
+                "description": "阅读进度"
+            },
+            "chapter_number": {
+                "locator_type": "class",
+                "locator_value": "chapter-number",
+                "description": "章节编号"
+            }
+        }
+    },
+    "urls": {
+        "login_page": "/user/login.html",
+        "home_page": "/index.html",
+        "user_center": "/user/center.html",
+        "bookshelf_page": "/user/favorites.html",
+        "book_detail_page": "/book/{book_id}.html",
+        "comment_page": "/book/comment-{book_id}.html"
+    },
+    "assertions": {
+        "login_success": [
+            "页面成功跳转至首页",
+            "本地存储包含token",
+            "页面显示用户昵称"
+        ],
+        "login_failure": [
+            "页面无跳转",
+            "显示错误提示信息"
+        ],
+        "reading_success": [
+            "页面成功跳转至阅读器界面",
+            "正确加载章节内容",
+            "章节标题显示正确",
+            "URL参数更新",
+            "章节标题更新",
+            "阅读位置定位正确",
+            "目录面板展开",
+            "点击后跳转至对应章节",
+            "当前章节高亮显示",
+            "阅读区文字实时缩放",
+            "排版不溢出",
+            "设置本地存储记忆",
+            "背景色正确变更",
+            "字体颜色适配",
+            "跳转至评论页面",
+            "页面滚动至输入框",
+            "评论列表加载",
+            "跳转至上次阅读的章节",
+            "阅读位置恢复",
+            "内容平滑滚动",
+            "到底部后自动加载下一章",
+            "无白屏或卡顿"
+        ]
+    }
+}

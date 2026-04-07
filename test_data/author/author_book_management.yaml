@@ -1,0 +1,79 @@
+# 作者小说管理测试数据
+# 对应 TestAuthorBookManagement 测试类
+
+test_cases:
+  # 作家发布小说分页列表查询接口测试
+  list_book_by_page:
+    id: "TR_AUTHOR_003"
+    title: "作家发布小说分页列表查询接口测试"
+    description: "测试作家发布小说分页列表查询接口"
+    auth_required: true
+    request:
+      method: "GET"
+      endpoint: "/author/listBookByPage"
+      params:
+        page: 1
+        pageSize: 10
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "book_management", "functional"]
+    
+  # 发布小说接口测试
+  add_book:
+    id: "TR_AUTHOR_004"
+    title: "发布小说接口测试"
+    description: "测试发布小说接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/addBook"
+      data:
+        bookName: "测试小说"
+        bookDesc: "这是一个测试小说描述"
+        categoryId: 1
+        authorId: 1
+        workDirection: 0
+        isVip: 0
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "book_management", "functional"]
+    
+  # 更新小说状态接口测试
+  update_book_status:
+    id: "TR_AUTHOR_005"
+    title: "更新小说状态接口测试"
+    description: "测试更新小说状态接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/updateBookStatus"
+      data:
+        bookId: 1
+        status: 1
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "book_management", "functional"]
+    
+  # 修改小说封面接口测试
+  update_book_pic:
+    id: "TR_AUTHOR_006"
+    title: "修改小说封面接口测试"
+    description: "测试修改小说封面接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/updateBookPic"
+      data:
+        bookId: 1
+        bookPic: "http://example.com/book.jpg"
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "book_management", "functional"]

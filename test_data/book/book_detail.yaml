@@ -1,0 +1,35 @@
+# 小说详情测试数据
+# 对应 TestBookDetail 测试类
+
+test_cases:
+  # 查询小说详情信息测试用例
+  query_book_detail:
+    id: "TR_BOOK_007"
+    title: "查询小说详情信息接口测试"
+    description: "测试查询小说详情信息接口"
+    request:
+      method: "GET"
+      endpoint: "/book/queryBookDetail/{book_id}"
+      params: {}
+      path_params:
+        book_id: 1
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "detail", "smoke"]
+    
+  # 增加点击次数测试用例
+  add_visit_count:
+    id: "TR_BOOK_008"
+    title: "增加点击次数接口测试"
+    description: "测试增加点击次数接口"
+    request:
+      method: "POST"
+      endpoint: "/book/addVisitCount"
+      data:
+        bookId: 1
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "detail", "functional"]

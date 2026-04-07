@@ -1,0 +1,35 @@
+# 作者基础功能测试数据
+# 对应 TestAuthorBasic 测试类
+
+test_cases:
+  # 检查笔名是否可用接口测试
+  check_pen_name:
+    id: "TR_AUTHOR_001"
+    title: "检查笔名是否可用接口测试"
+    description: "测试检查笔名是否可用接口"
+    request:
+      method: "GET"
+      endpoint: "/author/checkPenName"
+      params:
+        penName: "测试笔名"
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "basic", "smoke"]
+    
+  # 查询AI生成图片接口测试
+  query_ai_gen_pic:
+    id: "TR_AUTHOR_002"
+    title: "查询AI生成图片接口测试"
+    description: "测试查询AI生成图片接口"
+    request:
+      method: "GET"
+      endpoint: "/author/queryAiGenPic"
+      params:
+        bookId: 1
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "basic", "ai"]

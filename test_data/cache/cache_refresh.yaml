@@ -1,0 +1,20 @@
+# 缓存刷新测试数据
+# 对应 TestCacheRefresh 测试类
+
+test_cases:
+  # 刷新缓存接口测试
+  refresh_cache:
+    id: "TR_CACHE_001"
+    title: "刷新缓存接口测试"
+    description: "测试刷新缓存接口"
+    request:
+      method: "GET"
+      endpoint: "/cache/refreshCache/{cache_type}/{pass_code}"
+      path_params:
+        cache_type: 1
+        pass_code: "refresh_pass"
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["cache", "refresh", "functional"]

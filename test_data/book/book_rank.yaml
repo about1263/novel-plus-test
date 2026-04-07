@@ -1,0 +1,65 @@
+# 小说排行榜测试数据
+# 对应 TestBookRank 测试类
+
+test_cases:
+  # 点击排行榜测试用例
+  list_click_rank:
+    id: "TR_BOOK_001"
+    title: "点击排行榜接口测试"
+    description: "测试点击排行榜接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listClickRank"
+      params: {}
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "rank", "smoke"]
+    
+  # 新书排行榜测试用例  
+  list_new_rank:
+    id: "TR_BOOK_002"
+    title: "新书排行榜接口测试"
+    description: "测试新书排行榜接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listNewRank"
+      params: {}
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "rank", "smoke"]
+    
+  # 更新排行榜测试用例
+  list_update_rank:
+    id: "TR_BOOK_003"
+    title: "更新排行榜接口测试"
+    description: "测试更新排行榜接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listUpdateRank"
+      params: {}
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "rank", "smoke"]
+    
+  # 小说排行信息查询测试用例
+  list_rank:
+    id: "TR_BOOK_004"
+    title: "小说排行信息查询接口测试"
+    description: "测试小说排行信息查询接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listRank"
+      params:
+        type: 0
+        limit: 30
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "rank", "functional"]

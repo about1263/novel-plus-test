@@ -1,0 +1,22 @@
+# 章节购买测试数据
+# 对应 TestUserBuyChapter 测试类
+
+test_cases:
+  # 购买小说章节接口测试（需要虚拟支付环境，默认跳过）
+  buy_book_index:
+    id: "TR_USER_026"
+    title: "购买小说章节接口测试"
+    description: "测试购买小说章节接口，需要虚拟支付环境"
+    request:
+      method: "POST"
+      endpoint: "/user/buyBookIndex"
+      data:
+        bookId: 1
+        indexId: 1
+        buyAmount: 10
+    expected:
+      code: "200"
+      data_checks: []
+    tags: ["user", "buy_chapter", "auth", "skip"]
+    auth_required: true
+    skip: true

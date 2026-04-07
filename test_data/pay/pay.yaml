@@ -1,0 +1,36 @@
+# 支付模块测试数据
+# 对应 TestPay 测试类
+
+test_cases:
+  # 支付宝支付接口测试
+  ali_pay:
+    id: "TR_PAY_001"
+    title: "支付宝支付接口测试"
+    description: "测试支付宝支付接口，验证接口可访问性"
+    request:
+      method: "GET"
+      endpoint: "/pay/aliPay"
+      params:
+        payAmount: 100
+    expected:
+      code: "200"  # HTTP状态码，不是响应体中的code
+      response_type: "html_or_json"
+      content_type_contains: ["text/html", "application/json"]
+    tags: ["pay", "ali_pay", "smoke"]
+    auth_required: false
+
+  # 支付宝支付通知接口测试
+  ali_pay_notify:
+    id: "TR_PAY_002"
+    title: "支付宝支付通知接口测试"
+    description: "测试支付宝支付通知接口，验证接口可访问性"
+    request:
+      method: "GET"
+      endpoint: "/pay/aliPay/notify"
+      params: {}
+    expected:
+      code: "200"  # HTTP状态码
+      response_type: "html_or_json"
+      content_type_contains: ["text/html", "application/json"]
+    tags: ["pay", "ali_pay", "notify", "smoke"]
+    auth_required: false

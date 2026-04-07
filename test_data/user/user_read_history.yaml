@@ -1,0 +1,38 @@
+# 用户阅读记录测试数据
+# 对应 TestUserReadHistory 测试类
+
+test_cases:
+  # 分页查询阅读记录接口测试
+  list_read_history_by_page:
+    id: "TR_USER_021"
+    title: "分页查询阅读记录接口测试"
+    description: "测试分页查询阅读记录接口"
+    request:
+      method: "GET"
+      endpoint: "/user/listReadHistoryByPage"
+      params:
+        page: 1
+        pageSize: 10
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks: []
+    tags: ["user", "read_history", "auth", "smoke"]
+    auth_required: true
+
+  # 添加阅读记录接口测试
+  add_read_history:
+    id: "TR_USER_022"
+    title: "添加阅读记录接口测试"
+    description: "测试添加阅读记录接口"
+    request:
+      method: "POST"
+      endpoint: "/user/addReadHistory"
+      data:
+        bookId: 1
+        preContentId: 1
+    expected:
+      code: "200"
+      data_checks: []
+    tags: ["user", "read_history", "auth", "smoke"]
+    auth_required: true

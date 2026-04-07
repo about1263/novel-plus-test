@@ -1,0 +1,18 @@
+# 小说分类测试数据
+# 对应 TestBookCategory 测试类
+
+test_cases:
+  # 小说分类列表查询测试用例
+  list_book_category:
+    id: "TR_BOOK_005"
+    title: "小说分类列表查询接口测试"
+    description: "测试小说分类列表查询接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listBookCategory"
+      params: {}
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "category", "smoke"]

@@ -1,0 +1,76 @@
+# 作者章节管理测试数据
+# 对应 TestAuthorChapterManagement 测试类
+
+test_cases:
+  # 删除章节接口测试
+  delete_index:
+    id: "TR_AUTHOR_007"
+    title: "删除章节接口测试"
+    description: "测试删除章节接口"
+    auth_required: true
+    request:
+      method: "DELETE"
+      endpoint: "/author/deleteIndex/{index_id}"
+      path_params:
+        index_id: 1
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "chapter_management", "functional"]
+    
+  # 发布章节内容接口测试
+  add_book_content:
+    id: "TR_AUTHOR_008"
+    title: "发布章节内容接口测试"
+    description: "测试发布章节内容接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/addBookContent"
+      data:
+        bookId: 1
+        indexName: "第一章 测试章节"
+        content: "这是章节内容..."
+        isVip: 0
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "chapter_management", "functional"]
+    
+  # 查询章节内容接口测试
+  query_index_content:
+    id: "TR_AUTHOR_009"
+    title: "查询章节内容接口测试"
+    description: "测试查询章节内容接口"
+    auth_required: true
+    request:
+      method: "GET"
+      endpoint: "/author/queryIndexContent/{index_id}"
+      path_params:
+        index_id: 1
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "chapter_management", "functional"]
+    
+  # 更新章节内容接口测试
+  update_book_content:
+    id: "TR_AUTHOR_010"
+    title: "更新章节内容接口测试"
+    description: "测试更新章节内容接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/updateBookContent"
+      data:
+        indexId: 1
+        indexName: "第一章 修改后的章节"
+        content: "修改后的章节内容..."
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "chapter_management", "functional"]

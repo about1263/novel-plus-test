@@ -1,0 +1,2376 @@
+[
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\AuthorController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "AuthorController",
+    "class_path": "author",
+    "methods": [
+      {
+        "name": "checkPenName",
+        "http_method": "GET",
+        "path": "/author/checkPenName",
+        "return_type": "RestResult<Boolean>",
+        "response_type": "Boolean",
+        "description": "",
+        "parameters": [
+          {
+            "name": "penName",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Boolean> checkPenName(String penName)"
+      },
+      {
+        "name": "listBookByPage",
+        "http_method": "GET",
+        "path": "/author/listBookByPage",
+        "return_type": "RestResult<PageBean<Book>>",
+        "response_type": "PageBean<Book",
+        "description": "作家发布小说分页列表查询",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<PageBean<Book>> listBookByPage(@RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"10\") int pageSize, HttpServletRequest request)"
+      },
+      {
+        "name": "addBook",
+        "http_method": "POST",
+        "path": "/author/addBook",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "发布小说",
+        "parameters": [
+          {
+            "name": "bookDesc",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "book",
+            "type": "Book",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Void> addBook(@RequestParam(\"bookDesc\") String bookDesc, Book book, HttpServletRequest request)"
+      },
+      {
+        "name": "updateBookStatus",
+        "http_method": "POST",
+        "path": "/author/updateBookStatus",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "更新小说状态,上架或下架",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "status",
+            "type": "Byte",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Void> updateBookStatus(Long bookId, Byte status, HttpServletRequest request)"
+      },
+      {
+        "name": "deleteIndex",
+        "http_method": "DELETE",
+        "path": "/author/deleteIndex/{indexId}",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "删除章节",
+        "parameters": [
+          {
+            "name": "indexId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Void> deleteIndex(@PathVariable(\"indexId\") Long indexId, HttpServletRequest request)"
+      },
+      {
+        "name": "addBookContent",
+        "http_method": "POST",
+        "path": "/author/addBookContent",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "发布章节内容",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "indexName",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "content",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "isVip",
+            "type": "Byte",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Void> addBookContent(Long bookId, String indexName, String content, Byte isVip, HttpServletRequest request)"
+      },
+      {
+        "name": "queryIndexContent",
+        "http_method": "GET",
+        "path": "/author/queryIndexContent/{indexId}",
+        "return_type": "RestResult<String>",
+        "response_type": "String",
+        "description": "查询章节内容",
+        "parameters": [
+          {
+            "name": "indexId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<String> queryIndexContent(@PathVariable(\"indexId\") Long indexId, HttpServletRequest request)"
+      },
+      {
+        "name": "updateBookContent",
+        "http_method": "POST",
+        "path": "/author/updateBookContent",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "更新章节内容",
+        "parameters": [
+          {
+            "name": "indexId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "indexName",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "content",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Void> updateBookContent(Long indexId, String indexName, String content, HttpServletRequest request)"
+      },
+      {
+        "name": "updateBookPic",
+        "http_method": "POST",
+        "path": "/author/updateBookPic",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "修改小说封面",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "bookPic",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<Void> updateBookPic(@RequestParam(\"bookId\") Long bookId, @RequestParam(\"bookPic\") String bookPic, HttpServletRequest request)"
+      },
+      {
+        "name": "listIncomeDailyByPage",
+        "http_method": "GET",
+        "path": "/author/listIncomeDailyByPage",
+        "return_type": "RestResult<PageBean<AuthorIncomeDetail>>",
+        "response_type": "PageBean<AuthorIncomeDetail",
+        "description": "作家日收入统计数据分页列表查询",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "startTime",
+            "type": "Date",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "endTime",
+            "type": "Date",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<PageBean<AuthorIncomeDetail>> listIncomeDailyByPage( @RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"10\") int pageSize, @RequestParam(value = \"bookId\", defaultValue = \"0\") Long bookId, @RequestParam(value = \"startTime\", defaultValue = \"2020-05-01\") Date startTime, @RequestParam(value = \"endTime\", defaultValue = \"2030-01-01\") Date endTime, HttpServletRequest request)"
+      },
+      {
+        "name": "listIncomeMonthByPage",
+        "http_method": "GET",
+        "path": "/author/listIncomeMonthByPage",
+        "return_type": "RestResult<PageBean<AuthorIncome>>",
+        "response_type": "PageBean<AuthorIncome",
+        "description": "作家月收入统计数据分页列表查询",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<PageBean<AuthorIncome>> listIncomeMonthByPage( @RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"10\") int pageSize, @RequestParam(value = \"bookId\", defaultValue = \"0\") Long bookId, HttpServletRequest request)"
+      },
+      {
+        "name": "queryAiGenPic",
+        "http_method": "GET",
+        "path": "/author/queryAiGenPic",
+        "return_type": "RestResult<String>",
+        "response_type": "String",
+        "description": "查询AI生成图片",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<String> queryAiGenPic(@RequestParam(\"bookId\") Long bookId)"
+      },
+      {
+        "name": "expandText",
+        "http_method": "POST",
+        "path": "/author/ai/expand",
+        "return_type": "RestResult<String>",
+        "response_type": "String",
+        "description": "AI扩写",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "ratio",
+            "type": "Double",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<String> expandText(@RequestParam(\"text\") String text, @RequestParam(\"ratio\") Double ratio)"
+      },
+      {
+        "name": "condenseText",
+        "http_method": "POST",
+        "path": "/author/ai/condense",
+        "return_type": "RestResult<String>",
+        "response_type": "String",
+        "description": "AI缩写",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "ratio",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<String> condenseText(@RequestParam(\"text\") String text, @RequestParam(\"ratio\") Integer ratio)"
+      },
+      {
+        "name": "continueText",
+        "http_method": "POST",
+        "path": "/author/ai/continue",
+        "return_type": "RestResult<String>",
+        "response_type": "String",
+        "description": "AI续写",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "length",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<String> continueText(@RequestParam(\"text\") String text, @RequestParam(\"length\") Integer length)"
+      },
+      {
+        "name": "polishText",
+        "http_method": "POST",
+        "path": "/author/ai/polish",
+        "return_type": "RestResult<String>",
+        "response_type": "String",
+        "description": "AI润色",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "RestResult<String> polishText(@RequestParam(\"text\") String text)"
+      },
+      {
+        "name": "streamExpandText",
+        "http_method": "GET",
+        "path": "/author/ai/stream/expand",
+        "return_type": "Flux<String>",
+        "response_type": "Flux<String>",
+        "description": "AI扩写",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "ratio",
+            "type": "Double",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "Flux<String> streamExpandText(@RequestParam(\"text\") String text, @RequestParam(\"ratio\") Double ratio)"
+      },
+      {
+        "name": "streamCondenseText",
+        "http_method": "GET",
+        "path": "/author/ai/stream/condense",
+        "return_type": "Flux<String>",
+        "response_type": "Flux<String>",
+        "description": "AI缩写",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "ratio",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "Flux<String> streamCondenseText(@RequestParam(\"text\") String text, @RequestParam(\"ratio\") Integer ratio)"
+      },
+      {
+        "name": "streamContinueText",
+        "http_method": "GET",
+        "path": "/author/ai/stream/continue",
+        "return_type": "Flux<String>",
+        "response_type": "Flux<String>",
+        "description": "AI续写",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "length",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "Flux<String> streamContinueText(@RequestParam(\"text\") String text, @RequestParam(\"length\") Integer length)"
+      },
+      {
+        "name": "streamPolishText",
+        "http_method": "GET",
+        "path": "/author/ai/stream/polish",
+        "return_type": "Flux<String>",
+        "response_type": "Flux<String>",
+        "description": "AI润色",
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "AuthorController",
+        "raw_signature": "Flux<String> streamPolishText(@RequestParam(\"text\") String text)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\BaseController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "BaseController",
+    "class_path": "",
+    "methods": []
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\BookController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "BookController",
+    "class_path": "book",
+    "methods": [
+      {
+        "name": "listClickRank",
+        "http_method": "GET",
+        "path": "/book/listClickRank",
+        "return_type": "RestResult<List<Book>>",
+        "response_type": "List<Book",
+        "description": "",
+        "parameters": [],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<Book>> listClickRank()"
+      },
+      {
+        "name": "listNewRank",
+        "http_method": "GET",
+        "path": "/book/listNewRank",
+        "return_type": "RestResult<List<Book>>",
+        "response_type": "List<Book",
+        "description": "查询首页新书榜单数据",
+        "parameters": [],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<Book>> listNewRank()"
+      },
+      {
+        "name": "listUpdateRank",
+        "http_method": "GET",
+        "path": "/book/listUpdateRank",
+        "return_type": "RestResult<List<BookVO>>",
+        "response_type": "List<BookVO",
+        "description": "查询首页更新榜单数据",
+        "parameters": [],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<BookVO>> listUpdateRank()"
+      },
+      {
+        "name": "listBookCategory",
+        "http_method": "GET",
+        "path": "/book/listBookCategory",
+        "return_type": "RestResult<List<BookCategory>>",
+        "response_type": "List<BookCategory",
+        "description": "查询小说分类列表",
+        "parameters": [],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<BookCategory>> listBookCategory()"
+      },
+      {
+        "name": "searchByPage",
+        "http_method": "GET",
+        "path": "/book/searchByPage",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "分页搜索",
+        "parameters": [
+          {
+            "name": "bookSP",
+            "type": "BookSpVO",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [
+              "@Validated"
+            ],
+            "description": ""
+          },
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> searchByPage(@Validated BookSpVO bookSP, @RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"20\") int pageSize)"
+      },
+      {
+        "name": "queryBookDetail",
+        "http_method": "GET",
+        "path": "/book/queryBookDetail/{id}",
+        "return_type": "RestResult<Book>",
+        "response_type": "Book",
+        "description": "查询小说详情信息",
+        "parameters": [
+          {
+            "name": "id",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<Book> queryBookDetail(@PathVariable(\"id\") Long id)"
+      },
+      {
+        "name": "listRank",
+        "http_method": "GET",
+        "path": "/book/listRank",
+        "return_type": "RestResult<List<Book>>",
+        "response_type": "List<Book",
+        "description": "查询小说排行信息",
+        "parameters": [
+          {
+            "name": "type",
+            "type": "Byte",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "limit",
+            "type": "Integer",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<Book>> listRank(@RequestParam(value = \"type\", defaultValue = \"0\") Byte type, @RequestParam(value = \"limit\", defaultValue = \"30\") Integer limit)"
+      },
+      {
+        "name": "addVisitCount",
+        "http_method": "POST",
+        "path": "/book/addVisitCount",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "增加点击次数",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<Void> addVisitCount(Long bookId)"
+      },
+      {
+        "name": "listRecBookByCatId",
+        "http_method": "GET",
+        "path": "/book/queryBookIndexAbout",
+        "return_type": "RestResult<List<Book>>",
+        "response_type": "List<Book",
+        "description": "查询章节相关信息",
+        "parameters": [
+          {
+            "name": "catId",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<Book>> listRecBookByCatId(Integer catId)"
+      },
+      {
+        "name": "listCommentByPage",
+        "http_method": "GET",
+        "path": "/book/listCommentByPage",
+        "return_type": "RestResult<PageBean<BookCommentVO>>",
+        "response_type": "PageBean<BookCommentVO",
+        "description": "分页查询书籍评论列表",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<PageBean<BookCommentVO>> listCommentByPage(@RequestParam(\"bookId\") Long bookId, @RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"5\") int pageSize)"
+      },
+      {
+        "name": "listCommentReplyByPage",
+        "http_method": "GET",
+        "path": "/book/listCommentReplyByPage",
+        "return_type": "RestResult<PageBean<BookCommentReplyVO>>",
+        "response_type": "PageBean<BookCommentReplyVO",
+        "description": "分页查询评论回复列表",
+        "parameters": [
+          {
+            "name": "commentId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<PageBean<BookCommentReplyVO>> listCommentReplyByPage(@RequestParam(\"commentId\") Long commentId, @RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"5\") int pageSize)"
+      },
+      {
+        "name": "addBookComment",
+        "http_method": "POST",
+        "path": "/book/addBookComment",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "新增评价",
+        "parameters": [
+          {
+            "name": "comment",
+            "type": "BookComment",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> addBookComment(BookComment comment, HttpServletRequest request)"
+      },
+      {
+        "name": "toggleCommentLike",
+        "http_method": "POST",
+        "path": "/book/toggleCommentLike",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "评价点赞/取消点赞",
+        "parameters": [
+          {
+            "name": "commentId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> toggleCommentLike(Long commentId, HttpServletRequest request)"
+      },
+      {
+        "name": "toggleCommentUnLike",
+        "http_method": "POST",
+        "path": "/book/toggleCommentUnLike",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "评价点踩/取消点踩",
+        "parameters": [
+          {
+            "name": "commentId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> toggleCommentUnLike(Long commentId, HttpServletRequest request)"
+      },
+      {
+        "name": "addCommentReply",
+        "http_method": "POST",
+        "path": "/book/addCommentReply",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "新增回复",
+        "parameters": [
+          {
+            "name": "commentReply",
+            "type": "BookCommentReply",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> addCommentReply(BookCommentReply commentReply, HttpServletRequest request)"
+      },
+      {
+        "name": "toggleReplyLike",
+        "http_method": "POST",
+        "path": "/book/toggleReplyLike",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "回复点赞/取消点赞",
+        "parameters": [
+          {
+            "name": "replyId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> toggleReplyLike(Long replyId, HttpServletRequest request)"
+      },
+      {
+        "name": "toggleReplyUnLike",
+        "http_method": "POST",
+        "path": "/book/toggleReplyUnLike",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "回复点赞/取消点赞",
+        "parameters": [
+          {
+            "name": "replyId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<?> toggleReplyUnLike(Long replyId, HttpServletRequest request)"
+      },
+      {
+        "name": "queryNewIndexList",
+        "http_method": "GET",
+        "path": "/book/queryNewIndexList",
+        "return_type": "RestResult<List<BookIndex>>",
+        "response_type": "List<BookIndex",
+        "description": "根据小说ID查询小说前十条最新更新目录集合",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<List<BookIndex>> queryNewIndexList(Long bookId)"
+      },
+      {
+        "name": "indexList",
+        "http_method": "GET",
+        "path": "/book/queryIndexList",
+        "return_type": "RestResult<PageBean<BookIndex>>",
+        "response_type": "PageBean<BookIndex",
+        "description": "目录页",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "orderBy",
+            "type": "String",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "BookController",
+        "raw_signature": "RestResult<PageBean<BookIndex>> indexList(Long bookId, @RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"5\") int pageSize, @RequestParam(value = \"orderBy\", defaultValue = \"index_num desc\") String orderBy)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\CacheController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "CacheController",
+    "class_path": "cache",
+    "methods": [
+      {
+        "name": "refreshCache",
+        "http_method": "GET",
+        "path": "/cache/refreshCache",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "type": "Byte",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pass",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "CacheController",
+        "raw_signature": "RestResult<Void> refreshCache(@PathVariable(\"type\") Byte type, @PathVariable(\"pass\") String pass)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\FileController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "FileController",
+    "class_path": "file",
+    "methods": [
+      {
+        "name": "getVerify",
+        "http_method": "GET",
+        "path": "/file/getVerify",
+        "return_type": "void",
+        "response_type": "void",
+        "description": "",
+        "parameters": [
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "response",
+            "type": "HttpServletResponse",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "FileController",
+        "raw_signature": "void getVerify(HttpServletRequest request, HttpServletResponse response)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\FriendLinkController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "FriendLinkController",
+    "class_path": "friendLink",
+    "methods": [
+      {
+        "name": "listIndexLink",
+        "http_method": "GET",
+        "path": "/friendLink/listIndexLink",
+        "return_type": "RestResult<List<FriendLink>>",
+        "response_type": "List<FriendLink",
+        "description": "",
+        "parameters": [],
+        "controller_class": "FriendLinkController",
+        "raw_signature": "RestResult<List<FriendLink>> listIndexLink()"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\NewsController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "NewsController",
+    "class_path": "news",
+    "methods": [
+      {
+        "name": "listIndexNews",
+        "http_method": "GET",
+        "path": "/news/listIndexNews",
+        "return_type": "RestResult<List<News>>",
+        "response_type": "List<News",
+        "description": "",
+        "parameters": [],
+        "controller_class": "NewsController",
+        "raw_signature": "RestResult<List<News>> listIndexNews()"
+      },
+      {
+        "name": "listByPage",
+        "http_method": "GET",
+        "path": "/news/listByPage",
+        "return_type": "RestResult<PageBean<News>>",
+        "response_type": "PageBean<News",
+        "description": "分页查询新闻列表 *",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "NewsController",
+        "raw_signature": "RestResult<PageBean<News>> listByPage(@RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"5\") int pageSize)"
+      },
+      {
+        "name": "addReadCount",
+        "http_method": "POST",
+        "path": "/news/addReadCount",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "增加新闻阅读量 *",
+        "parameters": [
+          {
+            "name": "newsId",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "NewsController",
+        "raw_signature": "RestResult<Void> addReadCount(@RequestParam(value = \"newsId\") Integer newsId)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\PayController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "PayController",
+    "class_path": "pay",
+    "methods": [
+      {
+        "name": "aliPay",
+        "http_method": "GET",
+        "path": "/pay/aliPay",
+        "return_type": "void",
+        "response_type": "void",
+        "description": "",
+        "parameters": [
+          {
+            "name": "payAmount",
+            "type": "Integer",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "httpResponse",
+            "type": "HttpServletResponse",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PayController",
+        "raw_signature": "void aliPay(Integer payAmount, HttpServletRequest request, HttpServletResponse httpResponse)"
+      },
+      {
+        "name": "aliPayNotify",
+        "http_method": "GET",
+        "path": "/pay/aliPay/notify",
+        "return_type": "void",
+        "response_type": "void",
+        "description": "",
+        "parameters": [
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "httpResponse",
+            "type": "HttpServletResponse",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PayController",
+        "raw_signature": "void aliPayNotify(HttpServletRequest request, HttpServletResponse httpResponse)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\UserController.java",
+    "package": "com.java2nb.novel.controller",
+    "class_name": "UserController",
+    "class_path": "user",
+    "methods": [
+      {
+        "name": "refreshToken",
+        "http_method": "POST",
+        "path": "/user/refreshToken",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "刷新token",
+        "parameters": [
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> refreshToken(HttpServletRequest request)"
+      },
+      {
+        "name": "queryIsInShelf",
+        "http_method": "GET",
+        "path": "/user/queryIsInShelf",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "查询小说是否已加入书架",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> queryIsInShelf(Long bookId, HttpServletRequest request)"
+      },
+      {
+        "name": "addToBookShelf",
+        "http_method": "POST",
+        "path": "/user/addToBookShelf",
+        "return_type": "RestResult<Void>",
+        "response_type": "Void",
+        "description": "加入书架",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "preContentId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<Void> addToBookShelf(Long bookId, Long preContentId, HttpServletRequest request)"
+      },
+      {
+        "name": "removeFromBookShelf",
+        "http_method": "DELETE",
+        "path": "/user/removeFromBookShelf/{bookId}",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "移出书架",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> removeFromBookShelf(@PathVariable(\"bookId\") Long bookId, HttpServletRequest request)"
+      },
+      {
+        "name": "listBookShelfByPage",
+        "http_method": "GET",
+        "path": "/user/listBookShelfByPage",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "分页查询书架",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> listBookShelfByPage(@RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"10\") int pageSize, HttpServletRequest request)"
+      },
+      {
+        "name": "listReadHistoryByPage",
+        "http_method": "GET",
+        "path": "/user/listReadHistoryByPage",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "分页查询阅读记录",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> listReadHistoryByPage(@RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"10\") int pageSize, HttpServletRequest request)"
+      },
+      {
+        "name": "addReadHistory",
+        "http_method": "POST",
+        "path": "/user/addReadHistory",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "添加阅读记录",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "preContentId",
+            "type": "Long",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> addReadHistory(Long bookId, Long preContentId, HttpServletRequest request)"
+      },
+      {
+        "name": "addFeedBack",
+        "http_method": "POST",
+        "path": "/user/addFeedBack",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "添加反馈",
+        "parameters": [
+          {
+            "name": "content",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> addFeedBack(String content, HttpServletRequest request)"
+      },
+      {
+        "name": "listUserFeedBackByPage",
+        "http_method": "GET",
+        "path": "/user/listUserFeedBackByPage",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "分页查询我的反馈列表",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> listUserFeedBackByPage(@RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"5\") int pageSize, HttpServletRequest request)"
+      },
+      {
+        "name": "userInfo",
+        "http_method": "GET",
+        "path": "/user/userInfo",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "查询个人信息",
+        "parameters": [
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> userInfo(HttpServletRequest request)"
+      },
+      {
+        "name": "updatePassword",
+        "http_method": "POST",
+        "path": "/user/updatePassword",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "更新密码",
+        "parameters": [
+          {
+            "name": "oldPassword",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "newPassword1",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "newPassword2",
+            "type": "String",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> updatePassword(String oldPassword, String newPassword1, String newPassword2, HttpServletRequest request)"
+      },
+      {
+        "name": "listCommentByPage",
+        "http_method": "GET",
+        "path": "/user/listCommentByPage",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "分页查询用户书评",
+        "parameters": [
+          {
+            "name": "page",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "pageSize",
+            "type": "int",
+            "source": "query",
+            "required": false,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> listCommentByPage(@RequestParam(value = \"curr\", defaultValue = \"1\") int page, @RequestParam(value = \"limit\", defaultValue = \"5\") int pageSize, HttpServletRequest request)"
+      },
+      {
+        "name": "buyBookIndex",
+        "http_method": "POST",
+        "path": "/user/buyBookIndex",
+        "return_type": "RestResult<?>",
+        "response_type": "?",
+        "description": "购买小说章节",
+        "parameters": [
+          {
+            "name": "buyRecord",
+            "type": "UserBuyRecord",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "UserController",
+        "raw_signature": "RestResult<?> buyBookIndex(UserBuyRecord buyRecord, HttpServletRequest request)"
+      }
+    ]
+  },
+  {
+    "file_path": "G:\\open_pr\\novel-plus\\novel-front\\src/main/java/com/java2nb/novel/controller\\page\\PageController.java",
+    "package": "com.java2nb.novel.controller.page",
+    "class_name": "PageController",
+    "class_path": "",
+    "methods": [
+      {
+        "name": "module",
+        "http_method": "GET",
+        "path": "/{url}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "url",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String module(@PathVariable(\"url\") String url)"
+      },
+      {
+        "name": "module2",
+        "http_method": "GET",
+        "path": "/{module}/{url}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "module",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "url",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String module2(@PathVariable(\"module\") String module, @PathVariable(\"url\") String url, HttpServletRequest request)"
+      },
+      {
+        "name": "module3",
+        "http_method": "GET",
+        "path": "/{module}/{classify}/{url}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "module",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "classify",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "url",
+            "type": "String",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String module3(@PathVariable(\"module\") String module, @PathVariable(\"classify\") String classify, @PathVariable(\"url\") String url)"
+      },
+      {
+        "name": "index",
+        "http_method": "GET",
+        "path": "//",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String index(Model model)"
+      },
+      {
+        "name": "login",
+        "http_method": "GET",
+        "path": "/user/login.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "登录页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String login()"
+      },
+      {
+        "name": "register",
+        "http_method": "GET",
+        "path": "/user/register.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "注册页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String register()"
+      },
+      {
+        "name": "userinfo",
+        "http_method": "GET",
+        "path": "/user/userinfo.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "用户中心页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String userinfo()"
+      },
+      {
+        "name": "favorites",
+        "http_method": "GET",
+        "path": "/user/favorites.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "我的书架页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String favorites()"
+      },
+      {
+        "name": "readHistory",
+        "http_method": "GET",
+        "path": "/user/read_history.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "阅读历史页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String readHistory()"
+      },
+      {
+        "name": "pay",
+        "http_method": "GET",
+        "path": "/pay/index.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "充值页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String pay()"
+      },
+      {
+        "name": "bookClass",
+        "http_method": "GET",
+        "path": "/book/bookclass.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "作品页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String bookClass()"
+      },
+      {
+        "name": "bookRank",
+        "http_method": "GET",
+        "path": "/book/book_ranking.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "排行页",
+        "parameters": [],
+        "controller_class": "PageController",
+        "raw_signature": "String bookRank()"
+      },
+      {
+        "name": "bookDetail",
+        "http_method": "GET",
+        "path": "//book/{bookId}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String bookDetail(@PathVariable(\"bookId\") Long bookId, Model model)"
+      },
+      {
+        "name": "indexList",
+        "http_method": "GET",
+        "path": "//book/indexList-{bookId}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String indexList(@PathVariable(\"bookId\") Long bookId, Model model)"
+      },
+      {
+        "name": "bookContent",
+        "http_method": "GET",
+        "path": "//book/{bookId}/{bookIndexId}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "bookIndexId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String bookContent(@PathVariable(\"bookId\") Long bookId, @PathVariable(\"bookIndexId\") Long bookIndexId, HttpServletRequest request, Model model)"
+      },
+      {
+        "name": "commentList",
+        "http_method": "GET",
+        "path": "//book/comment-{bookId}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "评论页面",
+        "parameters": [
+          {
+            "name": "bookId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String commentList(@PathVariable(\"bookId\") Long bookId, Model model)"
+      },
+      {
+        "name": "commentReplyList",
+        "http_method": "GET",
+        "path": "//book/reply-{commentId}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "评论回复页面",
+        "parameters": [
+          {
+            "name": "commentId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String commentReplyList(@PathVariable(\"commentId\") Long commentId, Model model)"
+      },
+      {
+        "name": "newsInfo",
+        "http_method": "GET",
+        "path": "//about/newsInfo-{newsId}.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "新闻内容页面",
+        "parameters": [
+          {
+            "name": "newsId",
+            "type": "Long",
+            "source": "path",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String newsInfo(@PathVariable(\"newsId\") Long newsId, Model model)"
+      },
+      {
+        "name": "authorRegister",
+        "http_method": "GET",
+        "path": "/author/register.html",
+        "return_type": "String",
+        "response_type": "String",
+        "description": "作者注册页面",
+        "parameters": [
+          {
+            "name": "author",
+            "type": "Author",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "request",
+            "type": "HttpServletRequest",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          },
+          {
+            "name": "model",
+            "type": "Model",
+            "source": "query",
+            "required": true,
+            "default_value": null,
+            "validation_rules": [],
+            "description": ""
+          }
+        ],
+        "controller_class": "PageController",
+        "raw_signature": "String authorRegister(Author author, HttpServletRequest request, Model model)"
+      }
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+# 小说网站测试项目依赖
+allure-pytest==2.12.0
+Faker==9.8.2
+jsonpath==0.82.2
+openpyxl==3.1.2
+pytest==7.3.2
+pytest-xdist==3.8.0
+requests==2.32.4
+PyYAML==6.0.1
+urllib3==2.0.6
+selenium==4.21.0

@@ -1,0 +1,17 @@
+# 文件验证码测试数据
+# 对应 TestFileVerify 测试类
+
+test_cases:
+  # 获取验证码接口测试
+  get_verify:
+    id: "TR_FILE_001"
+    title: "获取验证码接口测试"
+    description: "测试获取验证码接口"
+    request:
+      method: "GET"
+      endpoint: "/file/getVerify"
+      params: {}
+    expected:
+      response_type: "image"  # 特殊标记，表示期望图片响应
+      content_type_contains: ["image", "application/octet-stream"]
+    tags: ["file", "verify", "functional"]

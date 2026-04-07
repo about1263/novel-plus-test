@@ -1,0 +1,140 @@
+# 小说评论测试数据
+# 对应 TestBookComment 测试类
+
+test_cases:
+  # 分页查询书籍评论列表测试用例
+  list_comment_by_page:
+    id: "TR_BOOK_010"
+    title: "分页查询书籍评论列表接口测试"
+    description: "测试分页查询书籍评论列表接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listCommentByPage"
+      params:
+        bookId: 1
+        page: 1
+        pageSize: 5
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "comment", "smoke"]
+    auth_required: false
+    
+  # 分页查询评论回复列表测试用例
+  list_comment_reply_by_page:
+    id: "TR_BOOK_011"
+    title: "分页查询评论回复列表接口测试"
+    description: "测试分页查询评论回复列表接口"
+    request:
+      method: "GET"
+      endpoint: "/book/listCommentReplyByPage"
+      params:
+        commentId: 1
+        page: 1
+        pageSize: 5
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["book", "comment", "functional"]
+    auth_required: false
+    
+  # 新增评价测试用例（需要认证）
+  add_book_comment:
+    id: "TR_BOOK_012"
+    title: "新增评价接口测试"
+    description: "测试新增评价接口"
+    request:
+      method: "POST"
+      endpoint: "/book/addBookComment"
+      data:
+        bookId: 1
+        commentContent: "这是一条测试评论"
+        score: 5
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "comment", "functional", "auth"]
+    auth_required: true
+    
+  # 评价点赞/取消点赞测试用例（需要认证）
+  toggle_comment_like:
+    id: "TR_BOOK_013"
+    title: "评价点赞/取消点赞接口测试"
+    description: "测试评价点赞/取消点赞接口"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleCommentLike"
+      data:
+        commentId: 1
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "comment", "functional", "auth"]
+    auth_required: true
+    
+  # 评价点踩/取消点踩测试用例（需要认证）
+  toggle_comment_unlike:
+    id: "TR_BOOK_014"
+    title: "评价点踩/取消点踩接口测试"
+    description: "测试评价点踩/取消点踩接口"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleCommentUnLike"
+      data:
+        commentId: 1
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "comment", "functional", "auth"]
+    auth_required: true
+    
+  # 新增回复测试用例（需要认证）
+  add_comment_reply:
+    id: "TR_BOOK_015"
+    title: "新增回复接口测试"
+    description: "测试新增回复接口"
+    request:
+      method: "POST"
+      endpoint: "/book/addCommentReply"
+      data:
+        commentId: 1
+        replyContent: "这是一条测试回复"
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "comment", "functional", "auth"]
+    auth_required: true
+    
+  # 回复点赞/取消点赞测试用例（需要认证）
+  toggle_reply_like:
+    id: "TR_BOOK_016"
+    title: "回复点赞/取消点赞接口测试"
+    description: "测试回复点赞/取消点赞接口"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleReplyLike"
+      data:
+        replyId: 1
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "comment", "functional", "auth"]
+    auth_required: true
+    
+  # 回复点踩/取消点踩测试用例（需要认证）
+  toggle_reply_unlike:
+    id: "TR_BOOK_017"
+    title: "回复点踩/取消点踩接口测试"
+    description: "测试回复点踩/取消点踩接口"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleReplyUnLike"
+      data:
+        replyId: 1
+    expected:
+      code: "00000"
+      data_exists: false
+    tags: ["book", "comment", "functional", "auth"]
+    auth_required: true

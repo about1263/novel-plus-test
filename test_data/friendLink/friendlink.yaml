@@ -1,0 +1,21 @@
+# 友链模块测试数据
+# 对应 TestFriendLink 测试类
+
+test_cases:
+  # 首页友链列表接口测试
+  list_index_link:
+    id: "TR_FRIENDLINK_001"
+    title: "首页友链列表接口测试"
+    description: "测试首页友链列表接口"
+    request:
+      method: "GET"
+      endpoint: "/friendLink/listIndexLink"
+      params: {}
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "友链列表不应为空"
+    tags: ["friendLink", "smoke"]
+    auth_required: false

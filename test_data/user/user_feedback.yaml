@@ -1,0 +1,37 @@
+# 用户反馈管理测试数据
+# 对应 TestUserFeedback 测试类
+
+test_cases:
+  # 添加反馈接口测试
+  add_feedback:
+    id: "TR_USER_023"
+    title: "添加反馈接口测试"
+    description: "测试添加反馈接口"
+    request:
+      method: "POST"
+      endpoint: "/user/addFeedBack"
+      data:
+        content: "这是一个测试反馈内容"
+    expected:
+      code: "200"
+      data_checks: []
+    tags: ["user", "feedback", "auth", "smoke"]
+    auth_required: true
+
+  # 分页查询我的反馈列表接口测试
+  list_user_feedback_by_page:
+    id: "TR_USER_024"
+    title: "分页查询我的反馈列表接口测试"
+    description: "测试分页查询我的反馈列表接口"
+    request:
+      method: "GET"
+      endpoint: "/user/listUserFeedBackByPage"
+      params:
+        page: 1
+        pageSize: 5
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks: []
+    tags: ["user", "feedback", "auth", "smoke"]
+    auth_required: true

@@ -1,0 +1,41 @@
+# 用户令牌管理测试数据
+# 对应 TestUserToken 测试类
+
+test_cases:
+  # 刷新token接口测试
+  refresh_token:
+    id: "TR_USER_015"
+    title: "刷新token接口测试"
+    description: "测试刷新token接口"
+    request:
+      method: "POST"
+      endpoint: "/user/refreshToken"
+      data: {}
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks: []
+    tags: ["user", "token", "auth", "smoke"]
+    auth_required: true
+
+  # 查询用户信息接口测试
+  user_info:
+    id: "TR_USER_016"
+    title: "查询用户信息接口测试"
+    description: "测试查询用户信息接口"
+    request:
+      method: "GET"
+      endpoint: "/user"
+      params: {}
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "nickName"
+          description: "响应中应包含nickName字段"
+        - check_type: "field_exists"
+          field: "userPhoto"
+          description: "响应中应包含userPhoto字段"
+    tags: ["user", "token", "auth", "smoke"]
+    auth_required: true

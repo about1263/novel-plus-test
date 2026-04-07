@@ -1,0 +1,145 @@
+# AI写作助手测试数据
+# 对应 TestAuthorAI 测试类
+
+test_cases:
+  # AI扩写接口测试
+  expand_text:
+    id: "TR_AUTHOR_013"
+    title: "AI扩写接口测试"
+    description: "测试AI扩写接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/ai/expand"
+      data:
+        text: "这是一个测试文本"
+        ratio: 1.5
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "ai", "functional"]
+    
+  # AI缩写接口测试
+  condense_text:
+    id: "TR_AUTHOR_014"
+    title: "AI缩写接口测试"
+    description: "测试AI缩写接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/ai/condense"
+      data:
+        text: "这是一个测试文本，需要被缩写"
+        ratio: 50
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "ai", "functional"]
+    
+  # AI续写接口测试
+  continue_text:
+    id: "TR_AUTHOR_015"
+    title: "AI续写接口测试"
+    description: "测试AI续写接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/ai/continue"
+      data:
+        text: "这是一个测试文本"
+        length: 100
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "ai", "functional"]
+    
+  # AI润色接口测试
+  polish_text:
+    id: "TR_AUTHOR_016"
+    title: "AI润色接口测试"
+    description: "测试AI润色接口"
+    auth_required: true
+    request:
+      method: "POST"
+      endpoint: "/author/ai/polish"
+      data:
+        text: "这是一个需要润色的测试文本"
+    expected:
+      code: "00000"
+      data_exists: true
+      data_checks: []
+    tags: ["author", "ai", "functional"]
+    
+  # AI扩写流式接口测试
+  stream_expand_text:
+    id: "TR_AUTHOR_017"
+    title: "AI扩写流式接口测试"
+    description: "测试AI扩写流式接口"
+    auth_required: true
+    request:
+      method: "GET"
+      endpoint: "/author/ai/stream/expand"
+      params:
+        text: "这是一个测试文本"
+        ratio: 1.5
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "ai", "stream", "functional"]
+    
+  # AI缩写流式接口测试
+  stream_condense_text:
+    id: "TR_AUTHOR_018"
+    title: "AI缩写流式接口测试"
+    description: "测试AI缩写流式接口"
+    auth_required: true
+    request:
+      method: "GET"
+      endpoint: "/author/ai/stream/condense"
+      params:
+        text: "这是一个测试文本"
+        ratio: 50
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "ai", "stream", "functional"]
+    
+  # AI续写流式接口测试
+  stream_continue_text:
+    id: "TR_AUTHOR_019"
+    title: "AI续写流式接口测试"
+    description: "测试AI续写流式接口"
+    auth_required: true
+    request:
+      method: "GET"
+      endpoint: "/author/ai/stream/continue"
+      params:
+        text: "这是一个测试文本"
+        length: 100
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "ai", "stream", "functional"]
+    
+  # AI润色流式接口测试
+  stream_polish_text:
+    id: "TR_AUTHOR_020"
+    title: "AI润色流式接口测试"
+    description: "测试AI润色流式接口"
+    auth_required: true
+    request:
+      method: "GET"
+      endpoint: "/author/ai/stream/polish"
+      params:
+        text: "这是一个需要润色的测试文本"
+    expected:
+      code: "00000"
+      data_exists: false
+      data_checks: []
+    tags: ["author", "ai", "stream", "functional"]
