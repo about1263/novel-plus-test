@@ -64,7 +64,7 @@ class BrowserManager:
         """获取默认驱动路径"""
         # 尝试从项目根目录的web_driver目录查找
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-        web_driver_dir = os.path.join(project_root, 'web_driver')
+        web_driver_dir = os.path.join(project_root, 'ui_case', 'drivers')
         
         # 如果web_driver目录不存在，则使用系统PATH
         if not os.path.exists(web_driver_dir):

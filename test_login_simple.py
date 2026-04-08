@@ -38,8 +38,8 @@ except ImportError:
 def get_local_chromedriver_path():
     """获取本地chromedriver路径"""
     import os
-    # 检查web_driver目录下的chromedriver.exe
-    local_path = os.path.join(os.path.dirname(__file__), "web_driver", "chromedriver.exe")
+    # 检查ui_case/drivers目录下的chromedriver.exe
+    local_path = os.path.join(os.path.dirname(__file__), "ui_case", "drivers", "chromedriver.exe")
     if os.path.exists(local_path):
         print(f"[OK] 找到本地ChromeDriver: {local_path}")
         return local_path
@@ -57,7 +57,7 @@ def test_login_elements():
     # 配置选项
     HEADLESS = False  # 是否使用无头模式（不显示浏览器界面）
     WAIT_FOR_USER = False  # 测试完成后是否等待用户按Enter键
-    USE_LOCAL_DRIVER = True  # 是否使用本地web_driver目录下的chromedriver.exe
+    USE_LOCAL_DRIVER = True  # 是否使用本地ui_case/drivers目录下的chromedriver.exe
     
     driver = None
     try:
