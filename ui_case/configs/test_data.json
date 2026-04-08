@@ -1,8 +1,8 @@
 {
     "users": {
         "valid_user": {
-            "phone": "13800138000",
-            "password": "123456",
+            "phone": "18723968509",
+            "password": "zxcvbnm.",
             "nickname": "测试用户"
         },
         "invalid_users": [
@@ -17,12 +17,12 @@
                 "description": "手机号为空"
             },
             {
-                "phone": "13800138000",
+                "phone": "18723968509",
                 "password": "",
                 "description": "密码为空"
             },
             {
-                "phone": "13800138000",
+                "phone": "18723968509",
                 "password": "wrongpass",
                 "description": "密码错误"
             }
@@ -31,15 +31,15 @@
     "test_cases": {
         "login": {
             "normal_login": {
-                "phone": "13800138000",
-                "password": "123456",
+                "phone": "18723968509",
+                "password": "zxcvbnm.",
                 "expected_result": "登录成功",
                 "priority": "高",
                 "description": "正常登录流程验证"
             },
             "wrong_password": {
-                "phone": "13800138000",
-                "password": "12345678",
+                "phone": "18723968509",
+                "password": "wrongpass",
                 "expected_result": "账号或密码错误",
                 "priority": "高",
                 "description": "错误密码提示验证"
@@ -53,13 +53,13 @@
             },
             "empty_phone": {
                 "phone": "",
-                "password": "123456",
+                "password": "zxcvbnm.",
                 "expected_result": "手机号/密码不能为空",
                 "priority": "高",
                 "description": "空值前端校验 - 手机号为空"
             },
             "empty_password": {
-                "phone": "13800138000",
+                "phone": "18723968509",
                 "password": "",
                 "expected_result": "手机号/密码不能为空",
                 "priority": "高",

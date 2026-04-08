@@ -28,12 +28,6 @@ def pytest_addoption(parser):
         help="是否启用无头模式"
     )
     parser.addoption(
-        "--env",
-        action="store",
-        default="lane",
-        help="测试环境: lane 或 online"
-    )
-    parser.addoption(
         "--report",
         action="store",
         default="allure",
@@ -210,7 +204,7 @@ def pytest_runtest_makereport(item, call):
     if rep.when == "call" and rep.failed:
         # 添加失败信息到Allure
         if hasattr(rep, 'longrepr') and rep.longrepr:
-            allure.dynamic.description(rep.longrepr.text)
+            allure.dynamic.description(str(rep.longrepr))
         
         # 添加错误截图
         if hasattr(item, 'funcargs') and 'driver' in item.funcargs:

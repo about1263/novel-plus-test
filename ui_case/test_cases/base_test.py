@@ -43,6 +43,9 @@ class BaseUITest:
             browser_manager.take_screenshot(f"{test_name}_{timestamp}")
         except:
             pass
+        finally:
+            # 确保每个测试结束后关闭浏览器驱动
+            browser_manager.quit_driver()
     
     @pytest.fixture(scope="function", autouse=True)
     def login_page(self, driver, config):

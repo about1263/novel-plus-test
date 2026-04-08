@@ -57,7 +57,7 @@ def test_login_elements():
     # 配置选项
     HEADLESS = False  # 是否使用无头模式（不显示浏览器界面）
     WAIT_FOR_USER = False  # 测试完成后是否等待用户按Enter键
-    USE_LOCAL_DRIVER = False  # 是否使用本地web_driver目录下的chromedriver.exe
+    USE_LOCAL_DRIVER = True  # 是否使用本地web_driver目录下的chromedriver.exe
     
     driver = None
     try:

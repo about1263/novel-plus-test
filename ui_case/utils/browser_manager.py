@@ -9,6 +9,11 @@ from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.edge.options import Options as EdgeOptions
+try:
+    from webdriver_manager.chrome import ChromeDriverManager
+    WEBDRIVER_MANAGER_AVAILABLE = True
+except ImportError:
+    WEBDRIVER_MANAGER_AVAILABLE = False
 
 
 class BrowserManager:
@@ -46,24 +51,31 @@ class BrowserManager:
         self.logger = logging.getLogger(__name__)
         
         # 设置驱动路径
-        self.driver_path = self.config.get('driver_path')
-        if not self.driver_path:
+        config_driver_path = self.config.get('driver_path')
+        if config_driver_path and os.path.exists(config_driver_path):
+            self.driver_path = config_driver_path
+            self.logger.info(f"使用配置文件中指定的驱动路径: {self.driver_path}")
+        else:
+            if config_driver_path:
+                self.logger.warning(f"配置文件中指定的驱动路径不存在: {config_driver_path}，将尝试自动查找")
             self.driver_path = self._get_default_driver_path()
     
     def _get_default_driver_path(self):
         """获取默认驱动路径"""
-        drivers_dir = os.path.join(os.path.dirname(__file__), '..', 'drivers')
+        # 尝试从项目根目录的web_driver目录查找
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        web_driver_dir = os.path.join(project_root, 'web_driver')
         
-        # 如果drivers目录不存在，则使用系统PATH
-        if not os.path.exists(drivers_dir):
-            self.logger.warning(f"驱动目录不存在: {drivers_dir}，将使用系统PATH")
+        # 如果web_driver目录不存在，则使用系统PATH
+        if not os.path.exists(web_driver_dir):
+            self.logger.warning(f"驱动目录不存在: {web_driver_dir}，将使用系统PATH")
             return None
         
         browser_type = self.config.get('browser_type', self.DEFAULT_BROWSER)
         
         if browser_type == self.CHROME:
             # 查找Chrome驱动
-            chrome_driver = os.path.join(drivers_dir, 'chromedriver.exe')
+            chrome_driver = os.path.join(web_driver_dir, 'chromedriver.exe')
             if os.path.exists(chrome_driver):
                 return chrome_driver
             else:
@@ -71,7 +83,7 @@ class BrowserManager:
                 return None
         elif browser_type == self.EDGE:
             # 查找Edge驱动
-            edge_driver = os.path.join(drivers_dir, 'msedgedriver.exe')
+            edge_driver = os.path.join(web_driver_dir, 'msedgedriver.exe')
             if os.path.exists(edge_driver):
                 return edge_driver
             else:
@@ -82,6 +94,16 @@ class BrowserManager:
     
     def create_driver(self):
         """创建浏览器驱动实例"""
+        # 如果已有驱动实例，先退出
+        if self.driver:
+            try:
+                self.driver.quit()
+                self.logger.info("已退出之前的浏览器驱动")
+            except Exception as e:
+                self.logger.warning(f"退出之前的浏览器驱动时出错: {e}")
+            finally:
+                self.driver = None
+        
         browser_type = self.config.get('browser_type', self.DEFAULT_BROWSER)
         headless = self.config.get('headless', self.DEFAULT_HEADLESS)
         window_size = self.config.get('window_size', self.DEFAULT_WINDOW_SIZE)
@@ -113,6 +135,14 @@ class BrowserManager:
         """创建Chrome浏览器驱动"""
         options = ChromeOptions()
         
+        # 获取Chrome版本配置
+        chrome_version = self.config.get('chrome_version', '')
+        # 提取主版本号（第一个点前的数字）
+        if chrome_version and '.' in chrome_version:
+            chrome_major_version = chrome_version.split('.')[0]
+        else:
+            chrome_major_version = chrome_version
+        
         # 无头模式
         if headless:
             options.add_argument('--headless')
@@ -141,11 +171,25 @@ class BrowserManager:
             options.add_experimental_option("prefs", prefs)
         
         # 创建服务
+        self.logger.info(f"driver_path: {self.driver_path}, WEBDRIVER_MANAGER_AVAILABLE: {WEBDRIVER_MANAGER_AVAILABLE}")
         if self.driver_path:
+            self.logger.info(f"使用指定的ChromeDriver路径: {self.driver_path}")
             service = ChromeService(executable_path=self.driver_path)
             driver = webdriver.Chrome(service=service, options=options)
         else:
-            driver = webdriver.Chrome(options=options)
+            if WEBDRIVER_MANAGER_AVAILABLE:
+                self.logger.info("使用webdriver-manager自动下载匹配的ChromeDriver")
+                if chrome_major_version:
+                    self.logger.info(f"使用Chrome主版本号: {chrome_major_version}")
+                    driver_path = ChromeDriverManager(driver_version=chrome_major_version).install()
+                else:
+                    driver_path = ChromeDriverManager().install()
+                self.logger.info(f"webdriver-manager下载的驱动路径: {driver_path}")
+                service = ChromeService(executable_path=driver_path)
+                driver = webdriver.Chrome(service=service, options=options)
+            else:
+                self.logger.info("WEBDRIVER_MANAGER不可用，使用系统PATH中的ChromeDriver")
+                driver = webdriver.Chrome(options=options)
         
         return driver
     
@@ -192,9 +236,13 @@ class BrowserManager:
     def quit_driver(self):
         """退出浏览器驱动"""
         if self.driver:
-            self.driver.quit()
-            self.driver = None
-            self.logger.info("浏览器驱动已退出")
+            try:
+                self.driver.quit()
+                self.logger.info("浏览器驱动已退出")
+            except Exception as e:
+                self.logger.warning(f"退出浏览器驱动时出错（可能已退出）: {e}")
+            finally:
+                self.driver = None
     
     def get_driver(self):
         """获取当前驱动实例"""

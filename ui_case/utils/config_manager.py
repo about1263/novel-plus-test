@@ -81,7 +81,7 @@ class ConfigManager:
             'log_level': self.config.get('logging', 'log_level', fallback='INFO'),
             'log_file': self.config.get('logging', 'log_file', fallback='ui_case/logs/ui_test.log'),
             'console_output': self.config.getboolean('logging', 'console_output', fallback=True),
-            'log_format': self.config.get('logging', 'log_format', 
+            'log_format': self.config.get('logging', 'log_format', raw=True,
                                          fallback='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         }
     
