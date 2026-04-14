@@ -130,17 +130,17 @@
         "login_page": {
             "phone_input": {
                 "locator_type": "id",
-                "locator_value": "phone_input",
+                "locator_value": "txtUName",
                 "description": "手机号输入框"
             },
             "password_input": {
                 "locator_type": "id",
-                "locator_value": "password_input",
+                "locator_value": "txtPassword",
                 "description": "密码输入框"
             },
             "login_button": {
                 "locator_type": "id",
-                "locator_value": "login_button",
+                "locator_value": "btnLogin",
                 "description": "登录按钮"
             },
             "error_message": {
@@ -172,22 +172,22 @@
             },
             "continue_reading_button": {
                 "locator_type": "css",
-                "locator_value": ".continue-reading-button",
+                "locator_value": "td.goread a",
                 "description": "继续阅读按钮"
             },
             "book_item": {
-                "locator_type": "class",
-                "locator_value": "book-item",
+                "locator_type": "css",
+                "locator_value": "table tbody tr",
                 "description": "小说列表项"
             },
             "book_title": {
-                "locator_type": "class",
-                "locator_value": "book-title",
+                "locator_type": "css",
+                "locator_value": "tr td:first-child a, .book-title",
                 "description": "小说标题"
             },
             "empty_bookshelf": {
-                "locator_type": "class",
-                "locator_value": "empty-bookshelf",
+                "locator_type": "css",
+                "locator_value": ".empty-bookshelf, .no-data",
                 "description": "书架空状态提示"
             }
         },

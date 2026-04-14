@@ -13,17 +13,17 @@ class BookshelfPage(BasePage):
     # 页面URL
     URL = "/user/favorites.html"
     
-    # 元素定位器（待补充具体定位数据）
-    # 阅读按钮
+    # 元素定位器
+    # 阅读按钮（可能不存在，根据实际页面决定）
     READ_BUTTON = (By.CSS_SELECTOR, ".read-button")
-    # 继续阅读按钮
-    CONTINUE_READING_BUTTON = (By.CSS_SELECTOR, ".continue-reading-button")
-    # 小说列表项
-    BOOK_ITEM = (By.CLASS_NAME, "book-item")
-    # 小说标题
-    BOOK_TITLE = (By.CLASS_NAME, "book-title")
+    # 继续阅读按钮 - 根据提供的HTML: <td class="goread"><a href="...">继续阅读</a></td>
+    CONTINUE_READING_BUTTON = (By.CSS_SELECTOR, "td.goread a")
+    # 小说列表项 - 假设每本书是一个表格行<tr>
+    BOOK_ITEM = (By.CSS_SELECTOR, "table tbody tr")
+    # 小说标题 - 假设在第一个<td>或特定列中
+    BOOK_TITLE = (By.CSS_SELECTOR, "tr td:first-child a, .book-title")
     # 书架空状态提示
-    EMPTY_BOOKSHELF = (By.CLASS_NAME, "empty-bookshelf")
+    EMPTY_BOOKSHELF = (By.CSS_SELECTOR, ".empty-bookshelf, .no-data")
     # 用户昵称显示
     USER_NICKNAME = (By.ID, "user_nickname")
     

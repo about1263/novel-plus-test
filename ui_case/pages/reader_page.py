@@ -14,7 +14,7 @@ class ReaderPage(BasePage):
     
     # 元素定位器（待补充具体定位数据）
     # 下一章按钮
-    NEXT_CHAPTER_BUTTON = (By.CLASS_NAME, "next-chapter-button")
+    NEXT_CHAPTER_BUTTON = (By.CLASS_NAME, "next")
     # 上一章按钮
     PREVIOUS_CHAPTER_BUTTON = (By.CLASS_NAME, "previous-chapter-button")
     # 目录按钮
