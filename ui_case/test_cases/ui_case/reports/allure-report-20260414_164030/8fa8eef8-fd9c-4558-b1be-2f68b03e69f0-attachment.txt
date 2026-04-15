@@ -1,0 +1,3 @@
+2026-04-14 16:40:32,078 - ui_case.test_cases.base_test - INFO - 开始测试: test_detail_to_reading
+2026-04-14 16:40:58,832 - ui_case.test_cases.base_test - INFO - 测试结束: test_detail_to_reading, 耗时: 26.75秒
+2026-04-14 16:40:58,913 - ui_case.test_cases.base_test - INFO - 测试失败截图已保存: ui_case/screenshots/test_detail_to_reading_20260414_164058.png
