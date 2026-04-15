@@ -19,12 +19,20 @@ class ReaderPage(BasePage):
     PREVIOUS_CHAPTER_BUTTON = (By.CLASS_NAME, "previous-chapter-button")
     # 目录按钮
     CATALOG_BUTTON = (By.CLASS_NAME, "catalog-button")
-    # 设置按钮
-    SETTINGS_BUTTON = (By.CLASS_NAME, "settings-button")
+    # 设置按钮（根据用户提供的HTML：class="ico_setup"）
+    SETTINGS_BUTTON = (By.CLASS_NAME, "ico_setup")
     # 主题切换按钮
     THEME_SWITCH_BUTTON = (By.CLASS_NAME, "theme-switch-button")
     # 评论图标
     COMMENT_ICON = (By.CLASS_NAME, "comment-icon")
+    # 字体减小按钮（根据用户提供的HTML：class="small"）
+    FONT_SIZE_DECREASE_BUTTON = (By.CLASS_NAME, "small")
+    # 字体增大按钮（根据用户提供的HTML：class="big"）
+    FONT_SIZE_INCREASE_BUTTON = (By.CLASS_NAME, "big")
+    # 当前字体显示（根据用户提供的HTML：class="current_font"）
+    CURRENT_FONT_SIZE_DISPLAY = (By.CLASS_NAME, "current_font")
+    # 遮罩层（可能覆盖设置按钮）
+    MASK_BOX = (By.CLASS_NAME, "maskBox")
     # 章节标题
     CHAPTER_TITLE = (By.CLASS_NAME, "chapter-title")
     # 阅读内容区域
@@ -291,8 +299,17 @@ class ReaderPage(BasePage):
     
     # 设置相关操作
     def is_settings_panel_visible(self):
-        """检查设置面板是否可见"""
-        return self.is_element_visible(self.SETTINGS_PANEL)
+        """检查设置面板是否可见
+        通过检查字体大小调整按钮是否可见来判断设置面板是否展开
+        """
+        # 首先检查字体减小按钮是否可见（这是设置面板的一部分）
+        if self.is_element_visible(self.FONT_SIZE_DECREASE_BUTTON, timeout=1):
+            return True
+        # 其次检查字体增大按钮
+        if self.is_element_visible(self.FONT_SIZE_INCREASE_BUTTON, timeout=1):
+            return True
+        # 最后检查设置面板本身（备用）
+        return self.is_element_visible(self.SETTINGS_PANEL, timeout=1)
     
     def set_font_size(self, size="medium"):
         """设置字体大小"""
@@ -313,6 +330,40 @@ class ReaderPage(BasePage):
             return True
         return False
     
+    def increase_font_size(self):
+        """增大字体大小（点击A+按钮）"""
+        if not self.is_settings_panel_visible():
+            self.click_settings_button()
+        
+        self.click(self.FONT_SIZE_INCREASE_BUTTON)
+        self.logger.info("点击字体增大按钮(A+)")
+        time.sleep(0.5)
+        return self
+    
+    def decrease_font_size(self):
+        """减小字体大小（点击A-按钮）"""
+        if not self.is_settings_panel_visible():
+            self.click_settings_button()
+        
+        self.click(self.FONT_SIZE_DECREASE_BUTTON)
+        self.logger.info("点击字体减小按钮(A-)")
+        time.sleep(0.5)
+        return self
+    
+    def get_current_font_size(self):
+        """获取当前字体大小（从显示元素获取）"""
+        try:
+            if self.is_element_visible(self.CURRENT_FONT_SIZE_DISPLAY, timeout=2):
+                font_size_text = self.get_text(self.CURRENT_FONT_SIZE_DISPLAY)
+                # 尝试转换为整数
+                try:
+                    return int(font_size_text)
+                except ValueError:
+                    return font_size_text
+        except Exception as e:
+            self.logger.debug(f"获取当前字体大小失败: {e}")
+        return None
+    
     def set_theme(self, theme="day"):
         """设置主题"""
         if not self.is_settings_panel_visible():
@@ -332,11 +383,102 @@ class ReaderPage(BasePage):
         return False
     
     def close_settings_panel(self):
-        """关闭设置面板"""
-        if self.is_settings_panel_visible():
-            # 点击设置按钮再次关闭
-            self.click_settings_button()
+        """关闭设置面板
+        尝试多种方法关闭设置面板，处理可能的遮罩层覆盖问题
+        """
+        if not self.is_settings_panel_visible():
+            self.logger.info("设置面板不可见，无需关闭")
+            return self
+        
+        self.logger.info("开始关闭设置面板")
+        
+        # 方法1：检查并点击遮罩层（如果存在）
+        mask_closed = False
+        try:
+            # 检查遮罩层是否存在（不仅仅是可见，因为可能透明）
+            mask_elements = self.find_elements(self.MASK_BOX, timeout=1)
+            if mask_elements:
+                self.logger.info(f"检测到遮罩层，数量: {len(mask_elements)}")
+                # 尝试点击每个遮罩层元素
+                for i, mask_element in enumerate(mask_elements):
+                    try:
+                        self.logger.info(f"尝试点击第{i+1}个遮罩层")
+                        mask_element.click()
+                        time.sleep(0.3)
+                        mask_closed = True
+                        self.logger.info("点击遮罩层成功")
+                        break
+                    except Exception as e:
+                        self.logger.debug(f"点击第{i+1}个遮罩层失败: {e}")
+        except Exception as e:
+            self.logger.debug(f"检查遮罩层失败: {e}")
+        
+        # 检查设置面板是否已关闭
+        if not self.is_settings_panel_visible():
+            self.logger.info("设置面板已通过遮罩层点击关闭")
+            return self
+        
+        # 方法2：尝试点击设置按钮（可能被遮罩层覆盖）
+        if not mask_closed:
+            try:
+                self.logger.info("尝试点击设置按钮关闭面板")
+                self.click_settings_button()
+                time.sleep(0.5)
+                if not self.is_settings_panel_visible():
+                    self.logger.info("设置面板已通过设置按钮点击关闭")
+                    return self
+            except Exception as e:
+                self.logger.warning(f"点击设置按钮关闭面板失败: {e}")
+        
+        # 方法3：使用JavaScript点击设置按钮（绕过UI阻塞）
+        try:
+            self.logger.info("尝试使用JavaScript点击设置按钮")
+            settings_button = self.find_element(self.SETTINGS_BUTTON, timeout=2)
+            self.driver.execute_script("arguments[0].click();", settings_button)
             time.sleep(0.5)
+            if not self.is_settings_panel_visible():
+                self.logger.info("设置面板已通过JavaScript点击关闭")
+                return self
+        except Exception as e:
+            self.logger.debug(f"使用JavaScript点击设置按钮失败: {e}")
+        
+        # 方法4：按ESC键关闭面板（如果支持）
+        try:
+            self.logger.info("尝试按ESC键关闭面板")
+            from selenium.webdriver.common.keys import Keys
+            actions = ActionChains(self.driver)
+            actions.send_keys(Keys.ESCAPE).perform()
+            time.sleep(0.5)
+            if not self.is_settings_panel_visible():
+                self.logger.info("设置面板已通过ESC键关闭")
+                return self
+        except Exception as e:
+            self.logger.debug(f"按ESC键关闭面板失败: {e}")
+        
+        # 方法5：点击页面其他区域（如body）关闭面板
+        try:
+            self.logger.info("尝试点击页面其他区域关闭面板")
+            body = self.driver.find_element_by_tag_name('body')
+            # 点击页面左上角（避开中心区域）
+            actions = ActionChains(self.driver)
+            actions.move_to_element_with_offset(body, 10, 10).click().perform()
+            time.sleep(0.5)
+            if not self.is_settings_panel_visible():
+                self.logger.info("设置面板已通过点击其他区域关闭")
+                return self
+        except Exception as e:
+            self.logger.debug(f"点击页面其他区域失败: {e}")
+        
+        # 方法6：直接等待面板自动关闭（某些面板有自动关闭功能）
+        self.logger.info("等待面板可能自动关闭")
+        for i in range(10):  # 等待最多5秒
+            time.sleep(0.5)
+            if not self.is_settings_panel_visible():
+                self.logger.info("设置面板自动关闭")
+                return self
+        
+        # 所有方法都失败，记录警告但不抛出异常
+        self.logger.warning("无法关闭设置面板，但继续执行测试")
         return self
     
     # 内容相关操作

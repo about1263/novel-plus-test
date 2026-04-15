@@ -388,77 +388,143 @@ class TestReading(BaseUITest):
     @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.ui
     @pytest.mark.reading
-    def test_font_size_adjustment(self, login_page, test_data):
-        """字体大小调整验证"""
-        with allure.step("1. 打开首页"):
-            self.home_page.open_home_page()
+    def test_font_size_adjustment(self):
+        """字体大小调整验证 - 复用test_detail_to_reading的步骤进入阅读页"""
+        with allure.step("1. 同XSYD_UI_02进入小说阅读界面（从首页进入）"):
+            with allure.step("1.1 打开首页"):
+                self.home_page.open_home_page()
+                
+                allure.attach(self.driver.get_screenshot_as_png(),
+                             name="首页页面",
+                             attachment_type=allure.attachment_type.PNG)
             
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="首页页面",
-                         attachment_type=allure.attachment_type.PNG)
-        
-        with allure.step("2. 点击首页小说标签跳转到小说详情页"):
-            # 点击第一个小说标签
-            success = self.home_page.click_novel_tag(0)
-            self.assert_true(success, "无法点击小说标签或小说标签不存在")
+            with allure.step("1.2 点击首页小说标签跳转到小说详情页"):
+                # 点击第一个小说标签
+                success = self.home_page.click_novel_tag(0)
+                self.assert_true(success, "无法点击小说标签或小说标签不存在")
+                
+                # 验证跳转到小说详情页
+                current_url = self.get_current_url()
+                self.assert_true("/book/" in current_url and ".html" in current_url,
+                               f"未跳转到小说详情页，当前URL: {current_url}")
+                
+                allure.attach(self.driver.get_screenshot_as_png(),
+                             name="小说详情页",
+                             attachment_type=allure.attachment_type.PNG)
             
-            # 验证跳转到小说详情页
-            current_url = self.get_current_url()
-            self.assert_true("/book/" in current_url and ".html" in current_url,
-                           f"未跳转到小说详情页，当前URL: {current_url}")
+            with allure.step("1.3 点击阅读按钮"):
+                success = self.home_page.click_read_button()
+                self.assert_true(success, "无法点击阅读按钮或阅读按钮不存在")
             
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="小说详情页",
-                         attachment_type=allure.attachment_type.PNG)
-        
-        with allure.step("3. 点击阅读按钮"):
-            success = self.home_page.click_read_button()
-            self.assert_true(success, "无法点击阅读按钮或阅读按钮不存在")
-        
-        with allure.step("4. 验证跳转到阅读器界面"):
-            current_url = self.get_current_url()
-            self.logger.info(f"当前URL: {current_url}")
+            with allure.step("1.4 验证跳转到阅读器界面"):
+                current_url = self.get_current_url()
+                self.logger.info(f"当前URL: {current_url}")
+                
+                # 验证页面跳转至阅读器界面（书籍章节页面）
+                self.assert_true("/book/" in current_url, f"页面未跳转至阅读器界面，URL未包含书籍路径: {current_url}")
+                self.assert_true(".html" in current_url, f"页面未跳转至阅读器界面，URL不是HTML页面: {current_url}")
+                
+                allure.attach(self.driver.get_screenshot_as_png(),
+                             name="阅读器界面",
+                             attachment_type=allure.attachment_type.PNG)
             
-            # 验证页面跳转至阅读器界面（书籍章节页面）
-            self.assert_true("/book/" in current_url, f"页面未跳转至阅读器界面，URL未包含书籍路径: {current_url}")
-            self.assert_true(".html" in current_url, f"页面未跳转至阅读器界面，URL不是HTML页面: {current_url}")
-            
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="阅读器界面",
-                         attachment_type=allure.attachment_type.PNG)
+            with allure.step("1.5 等待内容加载完成"):
+                self.reader_page.wait_for_chapter_loaded()
         
-        with allure.step("5. 等待内容加载完成"):
-            self.reader_page.wait_for_chapter_loaded()
-        
-        with allure.step("6. 点击设置按钮"):
+        with allure.step("2. 点击设置按钮"):
             self.reader_page.click_settings_button()
             time.sleep(0.5)
             
             # 验证设置面板展开
             settings_visible = self.reader_page.is_settings_panel_visible()
             self.assert_true(settings_visible, "设置面板未展开")
-        
-        with allure.step("7. 依次切换小/中/大/特大字体"):
-            font_sizes = ["small", "medium", "large", "xlarge"]
-            
-            for size in font_sizes:
-                with allure.step(f"切换为{size}字体"):
-                    success = self.reader_page.set_font_size(size)
-                    self.assert_true(success, f"设置{size}字体失败")
-                    
-                    # 验证阅读区文字实时缩放
-                    font_changed = self.reader_page.verify_font_size_changed(size)
-                    self.assert_true(font_changed, f"{size}字体大小未生效")
-                    
-                    time.sleep(0.5)  # 等待视觉效果
-        
-        with allure.step("4. 验证设置本地存储记忆"):
-            # 重新打开设置面板检查当前选中状态
-            # 注意：这个验证依赖于具体实现，这里简单记录
-            self.logger.info("字体大小调整测试完成")
             
             allure.attach(self.driver.get_screenshot_as_png(),
-                         name="字体大小调整",
+                         name="设置面板展开",
+                         attachment_type=allure.attachment_type.PNG)
+        
+        with allure.step("3. 获取初始字体大小"):
+            initial_font_size = self.reader_page.get_current_font_size()
+            self.assert_is_not_none(initial_font_size, "无法获取初始字体大小")
+            self.logger.info(f"初始字体大小: {initial_font_size}")
+        
+        with allure.step("4. 点击字体增大按钮(A+)"):
+            self.reader_page.increase_font_size()
+            time.sleep(0.5)
+            
+            # 验证字体大小增大
+            increased_font_size = self.reader_page.get_current_font_size()
+            self.assert_is_not_none(increased_font_size, "增大字体后无法获取字体大小")
+            
+            # 验证字体大小确实增大了（转换为整数比较）
+            try:
+                initial = int(initial_font_size) if isinstance(initial_font_size, str) else initial_font_size
+                increased = int(increased_font_size) if isinstance(increased_font_size, str) else increased_font_size
+                self.assert_greater(increased, initial, f"字体大小未增大: {increased} <= {initial}")
+                self.logger.info(f"字体大小从 {initial} 增大到 {increased}")
+            except (ValueError, TypeError) as e:
+                self.logger.warning(f"无法比较字体大小数值: {e}")
+                # 至少验证字体大小改变了
+                self.assert_not_equal(increased_font_size, initial_font_size, 
+                                    f"字体大小未改变: {increased_font_size}")
+            
+            allure.attach(self.driver.get_screenshot_as_png(),
+                         name="字体增大后",
+                         attachment_type=allure.attachment_type.PNG)
+        
+        with allure.step("5. 点击字体减小按钮(A-)"):
+            self.reader_page.decrease_font_size()
+            time.sleep(0.5)
+            
+            # 验证字体大小减小
+            decreased_font_size = self.reader_page.get_current_font_size()
+            self.assert_is_not_none(decreased_font_size, "减小字体后无法获取字体大小")
+            
+            # 验证字体大小确实减小了（至少应该回到初始大小或更小）
+            try:
+                increased = int(increased_font_size) if isinstance(increased_font_size, str) else increased_font_size
+                decreased = int(decreased_font_size) if isinstance(decreased_font_size, str) else decreased_font_size
+                self.assert_less(decreased, increased, f"字体大小未减小: {decreased} >= {increased}")
+                self.logger.info(f"字体大小从 {increased} 减小到 {decreased}")
+            except (ValueError, TypeError) as e:
+                self.logger.warning(f"无法比较字体大小数值: {e}")
+                # 至少验证字体大小改变了
+                self.assert_not_equal(decreased_font_size, increased_font_size, 
+                                    f"字体大小未改变: {decreased_font_size}")
+            
+            allure.attach(self.driver.get_screenshot_as_png(),
+                         name="字体减小后",
+                         attachment_type=allure.attachment_type.PNG)
+        
+        with allure.step("6. 多次点击字体增大和减小按钮"):
+            # 再次增大字体
+            self.reader_page.increase_font_size()
+            time.sleep(0.3)
+            font_size_after_second_increase = self.reader_page.get_current_font_size()
+            self.logger.info(f"第二次增大后字体大小: {font_size_after_second_increase}")
+            
+            # 再次减小字体
+            self.reader_page.decrease_font_size()
+            time.sleep(0.3)
+            font_size_after_second_decrease = self.reader_page.get_current_font_size()
+            self.logger.info(f"第二次减小后字体大小: {font_size_after_second_decrease}")
+            
+            # 验证字体大小变化的一致性
+            if (isinstance(font_size_after_second_decrease, (int, str)) and 
+                isinstance(decreased_font_size, (int, str))):
+                self.assert_equal(str(font_size_after_second_decrease), str(decreased_font_size),
+                                f"字体大小不一致: {font_size_after_second_decrease} != {decreased_font_size}")
+        
+        with allure.step("7. 关闭设置面板"):
+            self.reader_page.close_settings_panel()
+            time.sleep(0.5)
+            
+            # 验证设置面板已关闭
+            settings_visible = self.reader_page.is_settings_panel_visible()
+            self.assert_false(settings_visible, "设置面板未关闭")
+            
+            allure.attach(self.driver.get_screenshot_as_png(),
+                         name="字体大小调整完成",
                          attachment_type=allure.attachment_type.PNG)
     
     @allure.story("主题切换验证")
