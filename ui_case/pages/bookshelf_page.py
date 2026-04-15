@@ -15,7 +15,7 @@ class BookshelfPage(BasePage):
     
     # 元素定位器
     # 阅读按钮（可能不存在，根据实际页面决定）
-    READ_BUTTON = (By.CSS_SELECTOR, ".read-button")
+    READ_BUTTON = (By.CSS_SELECTOR, "td.goread a")  # 与继续阅读按钮相同
     # 继续阅读按钮 - 根据提供的HTML: <td class="goread"><a href="...">继续阅读</a></td>
     CONTINUE_READING_BUTTON = (By.CSS_SELECTOR, "td.goread a")
     # 小说列表项 - 假设每本书是一个表格行<tr>
