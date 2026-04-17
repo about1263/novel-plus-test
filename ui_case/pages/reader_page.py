@@ -33,6 +33,8 @@ class ReaderPage(BasePage):
     CURRENT_FONT_SIZE_DISPLAY = (By.CLASS_NAME, "current_font")
     # 遮罩层（可能覆盖设置按钮）
     MASK_BOX = (By.CLASS_NAME, "maskBox")
+    # 关闭按钮（用户提供的HTML：class="closePopup"）
+    CLOSE_POPUP_BUTTON = (By.CLASS_NAME, "closePopup")
     # 章节标题
     CHAPTER_TITLE = (By.CLASS_NAME, "chapter-title")
     # 阅读内容区域
@@ -43,8 +45,8 @@ class ReaderPage(BasePage):
     CATALOG_CHAPTER_ITEM = (By.CLASS_NAME, "catalog-chapter-item")
     # 当前章节高亮
     CURRENT_CHAPTER_HIGHLIGHT = (By.CLASS_NAME, "current-chapter")
-    # 设置面板
-    SETTINGS_PANEL = (By.CLASS_NAME, "settings-panel")
+    # 设置面板（根据用户提供的HTML：class="readPopup setupBox"）
+    SETTINGS_PANEL = (By.CSS_SELECTOR, ".readPopup.setupBox")
     # 字体大小调整控件
     FONT_SIZE_SMALL = (By.CLASS_NAME, "font-size-small")
     FONT_SIZE_MEDIUM = (By.CLASS_NAME, "font-size-medium")
@@ -300,16 +302,23 @@ class ReaderPage(BasePage):
     # 设置相关操作
     def is_settings_panel_visible(self):
         """检查设置面板是否可见
-        通过检查字体大小调整按钮是否可见来判断设置面板是否展开
+        通过检查设置面板本身或其中的字体大小调整按钮是否可见来判断
         """
-        # 首先检查字体减小按钮是否可见（这是设置面板的一部分）
-        if self.is_element_visible(self.FONT_SIZE_DECREASE_BUTTON, timeout=1):
+        # 首先检查设置面板本身是否可见
+        if self.is_element_visible(self.SETTINGS_PANEL, timeout=2):
+            self.logger.debug("设置面板本身可见")
             return True
-        # 其次检查字体增大按钮
-        if self.is_element_visible(self.FONT_SIZE_INCREASE_BUTTON, timeout=1):
+        # 其次检查字体减小按钮是否可见（这是设置面板的一部分）
+        if self.is_element_visible(self.FONT_SIZE_DECREASE_BUTTON, timeout=2):
+            self.logger.debug("字体减小按钮可见")
             return True
-        # 最后检查设置面板本身（备用）
-        return self.is_element_visible(self.SETTINGS_PANEL, timeout=1)
+        # 最后检查字体增大按钮
+        if self.is_element_visible(self.FONT_SIZE_INCREASE_BUTTON, timeout=2):
+            self.logger.debug("字体增大按钮可见")
+            return True
+        # 所有元素都不可见
+        self.logger.debug("设置面板不可见")
+        return False
     
     def set_font_size(self, size="medium"):
         """设置字体大小"""
@@ -391,6 +400,109 @@ class ReaderPage(BasePage):
             return self
         
         self.logger.info("开始关闭设置面板")
+        
+        # 方法0：首先尝试点击关闭按钮（最直接的方式）
+        try:
+            self.logger.info("尝试点击关闭按钮")
+            # 增加等待时间，确保设置面板完全展开
+            time.sleep(0.5)
+            if self.is_element_visible(self.CLOSE_POPUP_BUTTON, timeout=3):
+                self.wait_for_element_clickable(self.CLOSE_POPUP_BUTTON, timeout=3)
+                self.click(self.CLOSE_POPUP_BUTTON)
+                time.sleep(0.5)
+                # 检查设置面板是否已关闭
+                if not self.is_settings_panel_visible():
+                    self.logger.info("设置面板已通过关闭按钮点击关闭")
+                    return self
+                else:
+                    self.logger.info("点击关闭按钮后设置面板仍然可见，继续尝试其他方法")
+            else:
+                self.logger.info("关闭按钮不可见，跳过此方法")
+        except Exception as e:
+            self.logger.debug(f"点击关闭按钮失败: {e}")
+        
+        # 方法0.1：使用JavaScript点击关闭按钮（绕过遮罩层拦截）
+        try:
+            self.logger.info("尝试使用JavaScript点击关闭按钮")
+            close_buttons = self.find_elements(self.CLOSE_POPUP_BUTTON, timeout=3)
+            if close_buttons:
+                self.logger.info(f"找到关闭按钮，数量: {len(close_buttons)}")
+                for i, close_button in enumerate(close_buttons):
+                    try:
+                        self.logger.info(f"尝试使用JavaScript点击第{i+1}个关闭按钮")
+                        self.driver.execute_script("arguments[0].click();", close_button)
+                        time.sleep(0.5)
+                        # 检查设置面板是否已关闭
+                        if not self.is_settings_panel_visible():
+                            self.logger.info("设置面板已通过JavaScript点击关闭按钮关闭")
+                            return self
+                    except Exception as e:
+                        self.logger.debug(f"使用JavaScript点击第{i+1}个关闭按钮失败: {e}")
+        except Exception as e:
+            self.logger.debug(f"使用JavaScript点击关闭按钮失败: {e}")
+        
+        # 方法0.2：直接执行关闭按钮的onclick事件（如果常规点击失败）
+        try:
+            self.logger.info("尝试直接执行关闭按钮的onclick事件")
+            close_buttons = self.find_elements(self.CLOSE_POPUP_BUTTON, timeout=2)
+            if close_buttons:
+                for i, close_button in enumerate(close_buttons):
+                    try:
+                        self.logger.info(f"尝试执行第{i+1}个关闭按钮的onclick事件")
+                        # 获取元素的onclick属性值并直接执行
+                        onclick_js = close_button.get_attribute("onclick")
+                        if onclick_js:
+                            # 清理JavaScript代码，确保可执行
+                            js_code = onclick_js.strip()
+                            if js_code.startswith("javascript:"):
+                                js_code = js_code[10:]  # 移除"javascript:"前缀
+                            self.driver.execute_script(js_code)
+                            self.logger.info(f"执行onclick事件成功: {js_code[:50]}...")
+                            time.sleep(0.5)
+                            if not self.is_settings_panel_visible():
+                                self.logger.info("设置面板已通过执行onclick事件关闭")
+                                return self
+                    except Exception as e:
+                        self.logger.debug(f"执行onclick事件失败: {e}")
+        except Exception as e:
+            self.logger.debug(f"尝试执行onclick事件失败: {e}")
+        
+        # 方法0.3：直接执行jQuery代码隐藏设置面板（根据用户提供的onclick事件）
+        try:
+            self.logger.info("尝试直接执行jQuery代码隐藏设置面板")
+            # 用户提供的onclick事件：javascript:$('.maskBox,.setupBox').hide();
+            js_code = """
+            try {
+                if (typeof jQuery !== 'undefined') {
+                    jQuery('.maskBox,.setupBox').hide();
+                    return 'jQuery执行成功';
+                } else if (typeof $ !== 'undefined') {
+                    $('.maskBox,.setupBox').hide();
+                    return '$执行成功';
+                } else {
+                    // 尝试直接操作DOM
+                    var maskBoxes = document.querySelectorAll('.maskBox');
+                    var setupBoxes = document.querySelectorAll('.setupBox');
+                    for (var i = 0; i < maskBoxes.length; i++) {
+                        maskBoxes[i].style.display = 'none';
+                    }
+                    for (var i = 0; i < setupBoxes.length; i++) {
+                        setupBoxes[i].style.display = 'none';
+                    }
+                    return '原生DOM操作成功';
+                }
+            } catch (e) {
+                return '执行失败: ' + e.message;
+            }
+            """
+            result = self.driver.execute_script(js_code)
+            self.logger.info(f"执行jQuery隐藏代码结果: {result}")
+            time.sleep(0.5)
+            if not self.is_settings_panel_visible():
+                self.logger.info("设置面板已通过jQuery代码隐藏")
+                return self
+        except Exception as e:
+            self.logger.debug(f"执行jQuery代码失败: {e}")
         
         # 方法1：检查并点击遮罩层（如果存在）
         mask_closed = False
