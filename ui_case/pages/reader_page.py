@@ -23,8 +23,12 @@ class ReaderPage(BasePage):
     SETTINGS_BUTTON = (By.CLASS_NAME, "ico_setup")
     # 主题切换按钮
     THEME_SWITCH_BUTTON = (By.CLASS_NAME, "theme-switch-button")
-    # 评论图标
-    COMMENT_ICON = (By.CLASS_NAME, "comment-icon")
+    # 评论图标（用户提供的HTML：class="ico_comment"）
+    COMMENT_ICON = (By.CLASS_NAME, "ico_comment")
+    # 发表评论链接（class="fr"，href="#txtComment"）
+    PUBLISH_COMMENT_LINK = (By.CSS_SELECTOR, "a.fr[href='#txtComment']")
+    # 评论输入栏（id="txtComment"）
+    COMMENT_INPUT = (By.ID, "txtComment")
     # 字体减小按钮（根据用户提供的HTML：class="small"）
     FONT_SIZE_DECREASE_BUTTON = (By.CLASS_NAME, "small")
     # 字体增大按钮（根据用户提供的HTML：class="big"）
@@ -56,6 +60,13 @@ class ReaderPage(BasePage):
     THEME_DAY = (By.CLASS_NAME, "theme-day")
     THEME_NIGHT = (By.CLASS_NAME, "theme-night")
     THEME_EYE_PROTECTION = (By.CLASS_NAME, "theme-eye-protection")
+    # 颜色主题选项（用户提供的HTML结构）
+    COLOR_THEME_WHITE = (By.ID, "setup_color_white")
+    COLOR_THEME_GREEN = (By.ID, "setup_color_green")
+    COLOR_THEME_PINK = (By.ID, "setup_color_pink")
+    COLOR_THEME_YELLOW = (By.ID, "setup_color_yellow")
+    COLOR_THEME_GRAY = (By.ID, "setup_color_gray")
+    COLOR_THEME_NIGHT = (By.ID, "setup_color_night")
     # 阅读进度
     READING_PROGRESS = (By.CLASS_NAME, "reading-progress")
     # 章节编号显示
@@ -68,6 +79,12 @@ class ReaderPage(BasePage):
     DIR_LIST_CHAPTER_LINK = (By.CSS_SELECTOR, ".dirList ul li a")
     # 目录页章节标题span
     DIR_LIST_CHAPTER_SPAN = (By.CSS_SELECTOR, ".dirList ul li a span")
+    # 全部目录链接（用户提供的HTML：class="fr"）
+    ALL_CATALOG_LINK = (By.CSS_SELECTOR, "a.fr[href*='indexList']")
+    # 我的书架链接（用户提供的HTML：class="sj_link"）
+    MY_BOOKSHELF_LINK = (By.CSS_SELECTOR, "a.sj_link")
+    # 最近阅读链接（用户提供的HTML：href="/user/read_history.html"）
+    RECENT_READING_LINK = (By.CSS_SELECTOR, "a[href='/user/read_history.html']")
     
     def __init__(self, driver, base_url=None):
         super().__init__(driver)
@@ -181,6 +198,35 @@ class ReaderPage(BasePage):
         self.click(self.COMMENT_ICON)
         self.logger.info("点击评论图标")
         return self
+    
+    def click_publish_comment_link(self):
+        """点击发表评论链接（class="fr"，href="#txtComment"）"""
+        self.click(self.PUBLISH_COMMENT_LINK)
+        self.logger.info("点击发表评论链接")
+        return self
+    
+    def is_comment_input_visible(self):
+        """检查评论输入栏是否可见"""
+        return self.is_element_visible(self.COMMENT_INPUT)
+    
+    def scroll_to_comment_input(self):
+        """滚动到评论输入栏（如果使用锚点定位）"""
+        # 如果点击发表评论链接后页面已滚动到输入栏，此方法可用于验证
+        # 检查输入栏是否在视口中可见
+        if self.is_comment_input_visible():
+            self.logger.info("评论输入栏已可见")
+            return True
+        else:
+            self.logger.warning("评论输入栏不可见，尝试滚动到元素")
+            # 使用JavaScript滚动到元素
+            try:
+                element = self.find_element(self.COMMENT_INPUT, timeout=2)
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                time.sleep(0.5)
+                return True
+            except Exception as e:
+                self.logger.error(f"滚动到评论输入栏失败: {e}")
+                return False
     
     def click_theme_switch_button(self):
         """点击主题切换按钮"""
@@ -387,6 +433,32 @@ class ReaderPage(BasePage):
         if theme in theme_mapping:
             self.click(theme_mapping[theme])
             self.logger.info(f"设置主题为: {theme}")
+            time.sleep(0.5)
+            return True
+        return False
+    
+    def set_color_theme(self, color="white"):
+        """设置颜色主题（背景色）
+        Args:
+            color: 颜色主题名称，可选值：white, green, pink, yellow, gray, night
+        Returns:
+            bool: 是否设置成功
+        """
+        if not self.is_settings_panel_visible():
+            self.click_settings_button()
+        
+        color_mapping = {
+            "white": self.COLOR_THEME_WHITE,
+            "green": self.COLOR_THEME_GREEN,
+            "pink": self.COLOR_THEME_PINK,
+            "yellow": self.COLOR_THEME_YELLOW,
+            "gray": self.COLOR_THEME_GRAY,
+            "night": self.COLOR_THEME_NIGHT
+        }
+        
+        if color in color_mapping:
+            self.click(color_mapping[color])
+            self.logger.info(f"设置颜色主题为: {color}")
             time.sleep(0.5)
             return True
         return False
@@ -836,3 +908,43 @@ class ReaderPage(BasePage):
     def get_local_storage_value(self, key):
         """获取本地存储值"""
         return self.driver.execute_script(f"return localStorage.getItem('{key}');")
+    
+    # 新增方法：点击全部目录、我的书架、最近阅读链接
+    def click_all_catalog_link(self):
+        """点击全部目录链接（class="fr"）"""
+        self.logger.info("尝试点击全部目录链接")
+        try:
+            if self.is_element_visible(self.ALL_CATALOG_LINK, timeout=5):
+                self.click(self.ALL_CATALOG_LINK)
+                self.logger.info("点击全部目录链接成功")
+                time.sleep(2)  # 等待目录页加载
+                return True
+        except Exception as e:
+            self.logger.error(f"点击全部目录链接失败: {e}")
+        return False
+    
+    def click_my_bookshelf_link(self):
+        """点击我的书架链接（class="sj_link"）"""
+        self.logger.info("尝试点击我的书架链接")
+        try:
+            if self.is_element_visible(self.MY_BOOKSHELF_LINK, timeout=5):
+                self.click(self.MY_BOOKSHELF_LINK)
+                self.logger.info("点击我的书架链接成功")
+                time.sleep(2)  # 等待书架页加载
+                return True
+        except Exception as e:
+            self.logger.error(f"点击我的书架链接失败: {e}")
+        return False
+    
+    def click_recent_reading_link(self):
+        """点击最近阅读链接（href="/user/read_history.html"）"""
+        self.logger.info("尝试点击最近阅读链接")
+        try:
+            if self.is_element_visible(self.RECENT_READING_LINK, timeout=5):
+                self.click(self.RECENT_READING_LINK)
+                self.logger.info("点击最近阅读链接成功")
+                time.sleep(2)  # 等待最近阅读页加载
+                return True
+        except Exception as e:
+            self.logger.error(f"点击最近阅读链接失败: {e}")
+        return False
