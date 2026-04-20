@@ -42,7 +42,7 @@ class ReaderPage(BasePage):
     # 章节标题
     CHAPTER_TITLE = (By.CLASS_NAME, "chapter-title")
     # 阅读内容区域
-    CONTENT_AREA = (By.CSS_SELECTOR, "#content-area, .content-area, .content, .chapter-content, .read-content")
+    CONTENT_AREA = (By.CSS_SELECTOR, "#content-area, .content-area, .content, .chapter-content, .read-content, #content, .reader-content, .chapter-text, .chapter-body, .novel-content, .text-content, .article-content, div[class*='content'], div[id*='content'], .chapter, .chapter__content")
     # 目录面板
     CATALOG_PANEL = (By.CLASS_NAME, "catalog-panel")
     # 目录章节项
@@ -726,7 +726,18 @@ class ReaderPage(BasePage):
             (By.CLASS_NAME, "content"),
             (By.CLASS_NAME, "chapter-content"),
             (By.CLASS_NAME, "read-content"),
+            (By.CLASS_NAME, "reader-content"),
+            (By.CLASS_NAME, "chapter-text"),
+            (By.CLASS_NAME, "chapter-body"),
+            (By.CLASS_NAME, "novel-content"),
+            (By.CLASS_NAME, "text-content"),
+            (By.CLASS_NAME, "article-content"),
+            (By.CLASS_NAME, "chapter"),
+            (By.CLASS_NAME, "chapter__content"),
+            (By.CSS_SELECTOR, "div[class*='content']"),
+            (By.CSS_SELECTOR, "div[id*='content']"),
             (By.TAG_NAME, "body"),  # 备用：使用body元素
+            (By.TAG_NAME, "html"),  # 备用：使用html元素
         ]
         
         content_area = None
@@ -789,14 +800,85 @@ class ReaderPage(BasePage):
     
     def scroll_to_top(self):
         """滚动到章节顶部"""
-        content_area = self.find_element(self.CONTENT_AREA)
+        # 尝试多个可能的内容区域定位器（与get_scroll_position方法保持一致）
+        content_area_locators = [
+            (By.ID, "content-area"),
+            (By.CLASS_NAME, "content-area"),
+            (By.CLASS_NAME, "content"),
+            (By.CLASS_NAME, "chapter-content"),
+            (By.CLASS_NAME, "read-content"),
+            (By.CLASS_NAME, "reader-content"),
+            (By.CLASS_NAME, "chapter-text"),
+            (By.CLASS_NAME, "chapter-body"),
+            (By.CLASS_NAME, "novel-content"),
+            (By.CLASS_NAME, "text-content"),
+            (By.CLASS_NAME, "article-content"),
+            (By.CLASS_NAME, "chapter"),
+            (By.CLASS_NAME, "chapter__content"),
+            (By.CSS_SELECTOR, "div[class*='content']"),
+            (By.CSS_SELECTOR, "div[id*='content']"),
+            (By.TAG_NAME, "body"),  # 备用：使用body元素
+            (By.TAG_NAME, "html"),  # 备用：使用html元素
+        ]
+        
+        content_area = None
+        for locator in content_area_locators:
+            try:
+                element = self.find_element(locator)
+                if element:
+                    content_area = element
+                    self.logger.debug(f"找到内容区域元素，定位器: {locator}")
+                    break
+            except Exception as e:
+                self.logger.debug(f"尝试定位器 {locator} 失败: {e}")
+                continue
+        
+        if not content_area:
+            self.logger.error("未找到任何内容区域元素")
+            raise Exception("未找到内容区域元素")
+        
         self.driver.execute_script("arguments[0].scrollTop = 0;", content_area)
         time.sleep(0.5)
         return self
     
     def simulate_mouse_scroll(self, scroll_amount=500):
         """模拟鼠标滚轮滚动"""
-        content_area = self.find_element(self.CONTENT_AREA)
+        # 尝试多个可能的内容区域定位器（与get_scroll_position方法保持一致）
+        content_area_locators = [
+            (By.ID, "content-area"),
+            (By.CLASS_NAME, "content-area"),
+            (By.CLASS_NAME, "content"),
+            (By.CLASS_NAME, "chapter-content"),
+            (By.CLASS_NAME, "read-content"),
+            (By.CLASS_NAME, "reader-content"),
+            (By.CLASS_NAME, "chapter-text"),
+            (By.CLASS_NAME, "chapter-body"),
+            (By.CLASS_NAME, "novel-content"),
+            (By.CLASS_NAME, "text-content"),
+            (By.CLASS_NAME, "article-content"),
+            (By.CLASS_NAME, "chapter"),
+            (By.CLASS_NAME, "chapter__content"),
+            (By.CSS_SELECTOR, "div[class*='content']"),
+            (By.CSS_SELECTOR, "div[id*='content']"),
+            (By.TAG_NAME, "body"),  # 备用：使用body元素
+            (By.TAG_NAME, "html"),  # 备用：使用html元素
+        ]
+        
+        content_area = None
+        for locator in content_area_locators:
+            try:
+                element = self.find_element(locator)
+                if element:
+                    content_area = element
+                    self.logger.debug(f"找到内容区域元素，定位器: {locator}")
+                    break
+            except Exception as e:
+                self.logger.debug(f"尝试定位器 {locator} 失败: {e}")
+                continue
+        
+        if not content_area:
+            self.logger.error("未找到任何内容区域元素")
+            raise Exception("未找到内容区域元素")
         
         # 使用JavaScript模拟滚动
         self.driver.execute_script(f"arguments[0].scrollTop += {scroll_amount};", content_area)
@@ -805,7 +887,43 @@ class ReaderPage(BasePage):
     
     def get_scroll_position(self):
         """获取当前滚动位置"""
-        content_area = self.find_element(self.CONTENT_AREA)
+        # 尝试多个可能的内容区域定位器（与scroll_to_bottom方法保持一致）
+        content_area_locators = [
+            (By.ID, "content-area"),
+            (By.CLASS_NAME, "content-area"),
+            (By.CLASS_NAME, "content"),
+            (By.CLASS_NAME, "chapter-content"),
+            (By.CLASS_NAME, "read-content"),
+            (By.CLASS_NAME, "reader-content"),
+            (By.CLASS_NAME, "chapter-text"),
+            (By.CLASS_NAME, "chapter-body"),
+            (By.CLASS_NAME, "novel-content"),
+            (By.CLASS_NAME, "text-content"),
+            (By.CLASS_NAME, "article-content"),
+            (By.CLASS_NAME, "chapter"),
+            (By.CLASS_NAME, "chapter__content"),
+            (By.CSS_SELECTOR, "div[class*='content']"),
+            (By.CSS_SELECTOR, "div[id*='content']"),
+            (By.TAG_NAME, "body"),  # 备用：使用body元素
+            (By.TAG_NAME, "html"),  # 备用：使用html元素
+        ]
+        
+        content_area = None
+        for locator in content_area_locators:
+            try:
+                element = self.find_element(locator)
+                if element:
+                    content_area = element
+                    self.logger.debug(f"找到内容区域元素，定位器: {locator}")
+                    break
+            except Exception as e:
+                self.logger.debug(f"尝试定位器 {locator} 失败: {e}")
+                continue
+        
+        if not content_area:
+            self.logger.error("未找到任何内容区域元素")
+            raise Exception("未找到内容区域元素")
+        
         scroll_top = self.driver.execute_script("return arguments[0].scrollTop;", content_area)
         scroll_height = self.driver.execute_script("return arguments[0].scrollHeight;", content_area)
         client_height = self.driver.execute_script("return arguments[0].clientHeight;", content_area)

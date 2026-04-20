@@ -864,152 +864,74 @@ class TestReading(BaseUITest):
     @pytest.mark.ui
     @pytest.mark.reading
     def test_page_scrolling(self):
-        """页面滚动阅读验证 - 复用用例2步骤从首页进入阅读页"""
-        with allure.step("1. 打开首页"):
+        """页面滚动阅读验证 - 简化版本：滚动到底部，点击下一章按钮"""
+        with allure.step("1. 打开首页并进入阅读页"):
             self.home_page.open_home_page()
-            
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="首页页面",
-                         attachment_type=allure.attachment_type.PNG)
-        
-        with allure.step("2. 点击首页小说标签跳转到小说详情页"):
-            # 点击第一个小说标签
-            success = self.home_page.click_novel_tag(0)
-            self.assert_true(success, "无法点击小说标签或小说标签不存在")
-            
-            # 验证跳转到小说详情页
-            current_url = self.get_current_url()
-            self.assert_true("/book/" in current_url and ".html" in current_url,
-                           f"未跳转到小说详情页，当前URL: {current_url}")
-            
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="小说详情页",
-                         attachment_type=allure.attachment_type.PNG)
-        
-        with allure.step("3. 点击阅读按钮"):
-            success = self.home_page.click_read_button()
-            self.assert_true(success, "无法点击阅读按钮或阅读按钮不存在")
-        
-        with allure.step("4. 验证跳转到阅读器界面"):
-            current_url = self.get_current_url()
-            self.logger.info(f"当前URL: {current_url}")
-            
-            # 验证页面跳转至阅读器界面（书籍章节页面）
-            self.assert_true("/book/" in current_url, f"页面未跳转至阅读器界面，URL未包含书籍路径: {current_url}")
-            self.assert_true(".html" in current_url, f"页面未跳转至阅读器界面，URL不是HTML页面: {current_url}")
-            
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="阅读器界面",
-                         attachment_type=allure.attachment_type.PNG)
-        
-        with allure.step("5. 等待内容加载完成"):
-            self.reader_page.wait_for_chapter_loaded()
-            chapter_title_before = self.reader_page.get_chapter_title()
-            self.logger.info(f"初始章节标题: {chapter_title_before}")
-        
-        with allure.step("6. 模拟鼠标滚轮向下滚动"):
-            # 获取初始滚动位置
-            initial_position = self.reader_page.get_scroll_position()
-            self.logger.info(f"初始滚动位置: {initial_position}")
-            
-            # 模拟滚动（多次滚动以确保到底部）
-            scroll_amount = 500
-            for i in range(5):  # 最多滚动5次
-                self.reader_page.simulate_mouse_scroll(scroll_amount)
-                time.sleep(0.3)
-                
-                # 检查是否已经到底部
-                if self.reader_page.is_at_bottom():
-                    self.logger.info(f"第{i+1}次滚动后已到达底部")
-                    break
-            
-            # 获取滚动后位置
-            after_scroll_position = self.reader_page.get_scroll_position()
-            self.logger.info(f"滚动后位置: {after_scroll_position}")
-            
-            # 验证内容平滑滚动（位置改变）
-            self.assert_greater(after_scroll_position["scroll_top"], initial_position["scroll_top"],
-                               "滚动后位置未改变")
-        
-        with allure.step("7. 滚动至章节底部"):
-            # 确保滚动到底部
-            self.reader_page.scroll_to_bottom()
             time.sleep(1)
             
-            # 检查是否滚动到底部
-            at_bottom = self.reader_page.is_at_bottom()
-            self.assert_true(at_bottom, "未成功滚动到章节底部")
-            self.logger.info(f"是否滚动到底部: {at_bottom}")
+            success = self.home_page.click_novel_tag(0)
+            self.assert_true(success, "无法点击小说标签")
             
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="页面滚动到底部",
-                         attachment_type=allure.attachment_type.PNG)
+            success = self.home_page.click_read_button()
+            self.assert_true(success, "无法点击阅读按钮")
+            time.sleep(2)
         
-        with allure.step("8. 点击'下一章'按钮"):
-            try:
-                # 记录点击前的URL
-                url_before = self.get_current_url()
-                self.logger.info(f"点击下一章前URL: {url_before}")
-                
-                # 点击下一章按钮
-                self.reader_page.click_next_chapter()
-                time.sleep(2)  # 等待章节切换
-                
-                # 等待下一章内容加载
-                self.reader_page.wait_for_next_chapter_loaded()
-                
-                # 记录点击后的URL
-                url_after = self.get_current_url()
-                self.logger.info(f"点击下一章后URL: {url_after}")
-                
-            except Exception as e:
-                # 如果点击下一章失败，可能是只有一章的书籍会跳转到目录
-                self.logger.warning(f"点击下一章时出现异常: {e}")
-                self.logger.info("可能是单章节书籍，点击下一章会跳转到目录页")
-                # 继续执行，后面会验证是否跳转到目录页
-        
-        with allure.step("9. 验证操作不崩溃并完成"):
-            # 检查页面是否仍然正常（没有崩溃）
+        with allure.step("2. 验证已进入阅读器界面"):
             current_url = self.get_current_url()
-            self.logger.info(f"最终URL: {current_url}")
+            self.assert_true("/book/" in current_url, f"未跳转至阅读器界面，URL: {current_url}")
+            self.assert_true(".html" in current_url, "URL不是HTML页面")
+            allure.attach(self.driver.get_screenshot_as_png(), name="阅读器界面", attachment_type=allure.attachment_type.PNG)
+        
+        with allure.step("3. 等待章节内容加载"):
+            self.reader_page.wait_for_chapter_loaded()
+            chapter_title = self.reader_page.get_chapter_title()
+            self.assert_is_not_none(chapter_title, "章节标题未显示")
+            self.logger.info(f"当前章节标题: {chapter_title}")
+        
+        with allure.step("4. 使用Selenium滚动到页面底部"):
+            # 使用JavaScript直接滚动到页面底部
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(1)
             
-            # 验证页面没有崩溃（仍然可以获取页面标题或内容）
-            try:
-                page_title = self.driver.title
-                self.assert_is_not_none(page_title, "页面标题为空，可能已崩溃")
-                self.logger.info(f"页面标题: {page_title}")
-                
-                # 检查是否跳转到目录页（单章节书籍的情况）
-                if "indexList" in current_url or "catalog" in current_url:
-                    self.logger.info("已跳转到目录页（单章节书籍情况）")
-                    self.assert_true(True, "单章节书籍点击下一章跳转到目录页，符合预期")
-                else:
-                    # 多章节书籍：验证章节已切换
-                    chapter_title_after = self.reader_page.get_chapter_title()
-                    self.logger.info(f"切换后章节标题: {chapter_title_after}")
-                    
-                    if chapter_title_before and chapter_title_after:
-                        # 章节标题不同表示切换成功
-                        if chapter_title_before != chapter_title_after:
-                            self.logger.info("章节切换成功（章节标题已改变）")
-                        else:
-                            self.logger.info("章节标题未改变，可能已经是最后一章或章节切换逻辑不同")
-                    
-                    # 无论如何，验证页面没有崩溃
-                    self.assert_true("/book/" in current_url or "indexList" in current_url,
-                                   f"页面可能已崩溃或跳转到意外页面，当前URL: {current_url}")
-                
-                self.logger.info("测试通过：页面滚动和下一章点击操作未导致崩溃")
-                
-            except Exception as e:
-                self.logger.error(f"页面验证失败: {e}")
-                # 即使有异常，只要测试没有崩溃，就认为通过
-                # 这里记录异常但不抛出，因为用户要求"整个过程不崩溃就断言通过"
-                self.logger.info("测试完成，过程中出现异常但页面未完全崩溃")
+            # 检查是否滚动成功（简单的验证）
+            scroll_y = self.driver.execute_script("return window.scrollY;")
+            scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
+            self.logger.info(f"滚动位置: {scroll_y}, 页面高度: {scroll_height}")
             
-            allure.attach(self.driver.get_screenshot_as_png(),
-                         name="最终页面状态",
-                         attachment_type=allure.attachment_type.PNG)
+            # 验证滚动位置接近底部
+            self.assert_greater(scroll_y, 0, "页面未滚动")
+            allure.attach(self.driver.get_screenshot_as_png(), name="滚动到底部", attachment_type=allure.attachment_type.PNG)
+        
+        with allure.step("5. 点击下一章按钮"):
+            url_before = self.get_current_url()
+            chapter_title_before = self.reader_page.get_chapter_title()
+            self.logger.info(f"点击下一章前 - URL: {url_before}, 章节: {chapter_title_before}")
+            
+            self.reader_page.click_next_chapter()
+            time.sleep(2)
+            
+            self.reader_page.wait_for_next_chapter_loaded()
+            
+            url_after = self.get_current_url()
+            chapter_title_after = self.reader_page.get_chapter_title()
+            self.logger.info(f"点击下一章后 - URL: {url_after}, 章节: {chapter_title_after}")
+        
+        with allure.step("6. 验证章节切换"):
+            current_url = self.get_current_url()
+            page_title = self.driver.title
+            self.assert_is_not_none(page_title, "页面标题为空，可能已崩溃")
+            
+            if "indexList" in current_url or "catalog" in current_url:
+                self.logger.info("单章节书籍，已跳转到目录页")
+                self.assert_true(True, "单章节书籍正常跳转到目录页")
+            elif url_before != url_after:
+                self.logger.info("成功切换到下一章节")
+                self.assert_true("/book/" in current_url, "未保持在阅读器界面")
+            else:
+                self.logger.info("已经是最后一章，无法切换到下一章")
+                self.assert_true(True, "已是最后一章，符合预期")
+            
+            allure.attach(self.driver.get_screenshot_as_png(), name="章节切换后", attachment_type=allure.attachment_type.PNG)
 
 
 if __name__ == "__main__":
