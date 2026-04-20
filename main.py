@@ -72,15 +72,13 @@ class NovelTestRunner:
             
             # 生成Allure HTML报告
             try:
-                # 生成时间戳
-                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                report_dir = f"allure-reports/report_{timestamp}"
+                report_dir = "allure-reports/report"
                 
                 # 确保报告目录存在
                 os.makedirs("allure-reports", exist_ok=True)
                 
                 # 生成HTML报告
-                allure_cmd = ["allure", "generate", "report", "-o", report_dir, "--clean"]
+                allure_cmd = ["allure", "generate", "report", "-o", report_dir]
                 log.info(f"生成Allure报告: {' '.join(allure_cmd)}")
                 allure_result = subprocess.run(allure_cmd, capture_output=True, text=True)
                 

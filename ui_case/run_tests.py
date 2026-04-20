@@ -72,9 +72,8 @@ def run_tests(args):
     
     # 报告配置
     if args.report == 'allure':
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         allure_results_dir = f'ui_case/reports/allure-results'
-        allure_report_dir = f'ui_case/reports/allure-report-{timestamp}'
+        allure_report_dir = f'ui_case/reports/allure-report'
         
         # 创建目录
         os.makedirs(allure_results_dir, exist_ok=True)
@@ -122,8 +121,8 @@ def clean_reports(keep_days=7):
     for item in os.listdir(report_dir):
         item_path = os.path.join(report_dir, item)
         
-        # 跳过latest链接
-        if item == 'latest':
+        # 跳过latest链接和固定目录
+        if item in ['latest', 'allure-report', 'allure-results']:
             continue
         
         try:

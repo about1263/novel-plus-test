@@ -82,7 +82,9 @@ class ConfigManager:
             'log_file': self.config.get('logging', 'log_file', fallback='ui_case/logs/ui_test.log'),
             'console_output': self.config.getboolean('logging', 'console_output', fallback=True),
             'log_format': self.config.get('logging', 'log_format', raw=True,
-                                         fallback='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                                         fallback='%(asctime)s - %(name)s - %(levelname)s - %(message)s'),
+            'max_bytes': self.config.getint('logging', 'max_bytes', fallback=10*1024*1024),
+            'backup_count': self.config.getint('logging', 'backup_count', fallback=5)
         }
     
     def get_report_config(self) -> Dict[str, Any]:

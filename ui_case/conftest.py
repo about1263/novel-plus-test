@@ -6,6 +6,7 @@ import pytest
 import logging
 import allure
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 
 from ui_case.utils.config_manager import ConfigManager
 from ui_case.utils.browser_manager import BrowserManager
@@ -57,7 +58,7 @@ def pytest_configure(config):
     # 设置Allure报告
     if config.getoption("--report") == "allure":
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        allure_report_dir = f"ui_case/reports/allure-report-{timestamp}"
+        allure_report_dir = "ui_case/reports/allure-report"
         allure_results_dir = f"ui_case/reports/allure-results"
         
         # 创建目录
@@ -232,7 +233,7 @@ def setup_logging(config_manager):
     
     # 文件处理器
     log_file = config_manager.get_log_file()
-    file_handler = logging.FileHandler(log_file, encoding='utf-8')
+    file_handler = RotatingFileHandler(log_file, maxBytes=logging_config['max_bytes'], backupCount=logging_config['backup_count'], encoding='utf-8')
     file_handler.setLevel(getattr(logging, logging_config['log_level']))
     file_formatter = logging.Formatter(logging_config['log_format'])
     file_handler.setFormatter(file_formatter)

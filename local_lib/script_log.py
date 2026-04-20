@@ -3,6 +3,7 @@
 import logging
 import os
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 
 
 class Logger:
@@ -10,7 +11,7 @@ class Logger:
     日志工具类
     """
 
-    def __init__(self, name='novel_test'):
+    def __init__(self, name='novel_test', max_bytes=10*1024*1024, backup_count=5):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.DEBUG)
         
@@ -20,10 +21,10 @@ class Logger:
             os.makedirs(log_dir)
         
         # 日志文件名
-        log_file = os.path.join(log_dir, f'{name}_{datetime.now().strftime("%Y%m%d")}.log')
+        log_file = os.path.join(log_dir, f'{name}.log')
         
         # 文件处理器
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
+        file_handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count, encoding='utf-8')
         file_handler.setLevel(logging.DEBUG)
         
         # 控制台处理器

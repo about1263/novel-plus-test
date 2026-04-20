@@ -1,4 +1,0 @@
-INFO     ui_case.test_cases.base_test:base_test.py:99 开始测试: test_bookshelf_to_reading
-ERROR    ui_case.pages.base_page:base_page.py:46 元素未找到: ('class name', 'book-item')
-INFO     ui_case.test_cases.base_test:base_test.py:106 测试结束: test_bookshelf_to_reading, 耗时: 17.25秒
-INFO     ui_case.test_cases.base_test:base_test.py:114 测试失败截图已保存: ui_case/screenshots/test_bookshelf_to_reading_20260414_155611.png

@@ -1,3 +1,0 @@
-INFO     ui_case.test_cases.base_test:base_test.py:99 开始测试: test_normal_login
-INFO     ui_case.test_cases.base_test:base_test.py:106 测试结束: test_normal_login, 耗时: 5.33秒
-INFO     ui_case.test_cases.base_test:base_test.py:114 测试失败截图已保存: ui_case/screenshots/test_normal_login_20260408_173644.png

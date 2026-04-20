@@ -1,6 +1,0 @@
-INFO     ui_case.test_cases.base_test:base_test.py:99 开始测试: test_next_chapter
-INFO     ui_case.test_cases.base_test:test_reading.py:162 当前URL: http://47.108.213.8/book/1262260513468559361/2026912680371056640.html
-WARNING  ui_case.pages.base_page:reader_page.py:267 章节内容加载超时: 10秒
-INFO     ui_case.test_cases.base_test:test_reading.py:175 当前章节标题:
-INFO     ui_case.test_cases.base_test:base_test.py:106 测试结束: test_next_chapter, 耗时: 59.66秒
-INFO     ui_case.test_cases.base_test:base_test.py:114 测试失败截图已保存: ui_case/screenshots/test_next_chapter_20260414_170736.png
