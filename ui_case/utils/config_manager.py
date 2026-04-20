@@ -30,6 +30,9 @@ class ConfigManager:
             raise FileNotFoundError(f"配置文件不存在: {self.config_file}")
         
         self.config.read(self.config_file, encoding='utf-8')
+        
+        # 项目根目录（ui_case的父目录）
+        self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     
     def get_browser_config(self) -> Dict[str, Any]:
         """获取浏览器配置"""
@@ -123,18 +126,27 @@ class ConfigManager:
     def get_screenshot_dir(self) -> str:
         """获取截图目录"""
         screenshot_dir = self.get_test_config()['screenshot_dir']
+        # 如果是相对路径，转换为基于项目根目录的绝对路径
+        if not os.path.isabs(screenshot_dir):
+            screenshot_dir = os.path.join(self.project_root, screenshot_dir)
         os.makedirs(screenshot_dir, exist_ok=True)
         return screenshot_dir
     
     def get_report_dir(self) -> str:
         """获取报告目录"""
         report_dir = self.get_test_config()['report_dir']
+        # 如果是相对路径，转换为基于项目根目录的绝对路径
+        if not os.path.isabs(report_dir):
+            report_dir = os.path.join(self.project_root, report_dir)
         os.makedirs(report_dir, exist_ok=True)
         return report_dir
     
     def get_log_file(self) -> str:
         """获取日志文件路径"""
         log_file = self.get_logging_config()['log_file']
+        # 如果是相对路径，转换为基于项目根目录的绝对路径
+        if not os.path.isabs(log_file):
+            log_file = os.path.join(self.project_root, log_file)
         log_dir = os.path.dirname(log_file)
         if log_dir:
             os.makedirs(log_dir, exist_ok=True)

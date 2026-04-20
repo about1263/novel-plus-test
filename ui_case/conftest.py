@@ -57,12 +57,18 @@ def pytest_configure(config):
     
     # 设置Allure报告
     if config.getoption("--report") == "allure":
+        import os
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        allure_report_dir = "ui_case/reports/allure-report"
-        allure_results_dir = f"ui_case/reports/allure-results"
+        
+        # 获取项目根目录（ui_case的父目录）
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        
+        # 构建基于项目根目录的绝对路径
+        allure_report_dir = os.path.join(project_root, "ui_case", "reports", "allure-report")
+        allure_results_dir = os.path.join(project_root, "ui_case", "reports", "allure-results")
         
         # 创建目录
-        import os
         os.makedirs(allure_report_dir, exist_ok=True)
         os.makedirs(allure_results_dir, exist_ok=True)
         

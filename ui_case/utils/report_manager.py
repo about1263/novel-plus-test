@@ -40,8 +40,12 @@ class ReportManager:
                 'attach_screenshot': True,
                 'attach_log': True
             }
+            # 获取项目根目录（ui_case的父目录）
+            import os
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            project_root = os.path.dirname(os.path.dirname(current_dir))
             self.test_config = {
-                'report_dir': 'ui_case/reports'
+                'report_dir': os.path.join(project_root, 'ui_case', 'reports')
             }
     
     def setup_allure(self, report_dir=None):

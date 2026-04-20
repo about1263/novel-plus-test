@@ -3,6 +3,7 @@
 提供所有页面对象的通用方法和属性
 """
 import logging
+import os
 import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -115,7 +116,15 @@ class BasePage:
     
     def take_screenshot(self, filename):
         """截取屏幕截图"""
-        screenshot_path = f"ui_case/screenshots/{filename}.png"
+        # 获取项目根目录（ui_case的父目录）
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(current_dir))
+        
+        # 使用基于项目根目录的截图目录
+        screenshot_dir = os.path.join(project_root, 'ui_case', 'screenshots')
+        os.makedirs(screenshot_dir, exist_ok=True)
+        
+        screenshot_path = os.path.join(screenshot_dir, f"{filename}.png")
         self.driver.save_screenshot(screenshot_path)
         self.logger.info(f"截图已保存: {screenshot_path}")
         return screenshot_path

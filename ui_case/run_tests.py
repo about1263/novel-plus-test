@@ -72,8 +72,12 @@ def run_tests(args):
     
     # 报告配置
     if args.report == 'allure':
-        allure_results_dir = f'ui_case/reports/allure-results'
-        allure_report_dir = f'ui_case/reports/allure-report'
+        # 获取项目根目录（ui_case的父目录）
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        
+        allure_results_dir = os.path.join(project_root, 'ui_case', 'reports', 'allure-results')
+        allure_report_dir = os.path.join(project_root, 'ui_case', 'reports', 'allure-report')
         
         # 创建目录
         os.makedirs(allure_results_dir, exist_ok=True)
@@ -95,7 +99,7 @@ def run_tests(args):
         subprocess.run(allure_cmd)
         
         # 创建latest链接
-        latest_dir = 'ui_case/reports/latest'
+        latest_dir = os.path.join(project_root, 'ui_case', 'reports', 'latest')
         if os.path.islink(latest_dir):
             os.unlink(latest_dir)
         os.symlink(allure_report_dir, latest_dir)
@@ -111,7 +115,11 @@ def clean_reports(keep_days=7):
     import shutil
     import time
     
-    report_dir = 'ui_case/reports'
+    # 获取项目根目录（ui_case的父目录）
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
+    
+    report_dir = os.path.join(project_root, 'ui_case', 'reports')
     if not os.path.exists(report_dir):
         print(f"报告目录不存在: {report_dir}")
         return

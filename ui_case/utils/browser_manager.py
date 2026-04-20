@@ -253,7 +253,12 @@ class BrowserManager:
         if not self.driver:
             raise RuntimeError("浏览器驱动未初始化")
         
-        screenshot_dir = os.path.join(os.path.dirname(__file__), '..', 'screenshots')
+        # 获取项目根目录（ui_case的父目录）
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(current_dir))
+        
+        # 使用基于项目根目录的截图目录
+        screenshot_dir = os.path.join(project_root, 'ui_case', 'screenshots')
         os.makedirs(screenshot_dir, exist_ok=True)
         
         screenshot_path = os.path.join(screenshot_dir, f"{filename}.png")
