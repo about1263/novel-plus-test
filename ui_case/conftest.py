@@ -81,6 +81,11 @@ def pytest_configure(config):
         config.option.allure_results_dir = allure_results_dir
         # 设置alluredir参数，以便allure-pytest插件使用
         config.option.alluredir = allure_results_dir
+    
+    # 设置UI测试专用的缓存目录，避免文件散落
+    ui_cache_dir = os.path.join(current_dir, '.pytest_cache')
+    os.makedirs(ui_cache_dir, exist_ok=True)
+    config.option.cache_dir = ui_cache_dir
 
 
 @pytest.fixture(scope="session")

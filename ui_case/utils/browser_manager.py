@@ -258,7 +258,7 @@ class BrowserManager:
         project_root = os.path.dirname(os.path.dirname(current_dir))
         
         # 使用基于项目根目录的截图目录
-        screenshot_dir = os.path.join(project_root, 'ui_case', 'screenshots')
+        screenshot_dir = os.path.join(project_root, 'ui_case', 'reports', 'allure-results')
         os.makedirs(screenshot_dir, exist_ok=True)
         
         screenshot_path = os.path.join(screenshot_dir, f"{filename}.png")

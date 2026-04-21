@@ -44,7 +44,7 @@ class CleanupManager:
             current_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(os.path.dirname(current_dir))
             self.test_config = {
-                'screenshot_dir': os.path.join(project_root, 'ui_case', 'screenshots'),
+                'screenshot_dir': os.path.join(project_root, 'ui_case', 'reports', 'allure-results'),
                 'report_dir': os.path.join(project_root, 'ui_case', 'reports')
             }
             self.logging_config = {
@@ -83,7 +83,7 @@ class CleanupManager:
     
     def _get_screenshot_dir(self) -> str:
         """获取截图目录"""
-        screenshot_dir = self.test_config.get('screenshot_dir', 'ui_case/screenshots')
+        screenshot_dir = self.test_config.get('screenshot_dir', 'ui_case/reports/allure-results')
         if not os.path.isabs(screenshot_dir):
             # 如果是相对路径，转换为绝对路径
             current_dir = os.path.dirname(os.path.abspath(__file__))

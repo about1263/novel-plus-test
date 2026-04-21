@@ -32,7 +32,8 @@ class ConfigManager:
         self.config.read(self.config_file, encoding='utf-8')
         
         # 项目根目录（ui_case的父目录）
-        self.project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        # __file__: ui_case/utils/config_manager.py → 上三级到项目根目录
+        self.project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     
     def get_browser_config(self) -> Dict[str, Any]:
         """获取浏览器配置"""
@@ -63,7 +64,7 @@ class ConfigManager:
             'test_password': self.config.get('test', 'test_password', fallback='123456'),
             'wrong_password': self.config.get('test', 'wrong_password', fallback='12345678'),
             'invalid_phone': self.config.get('test', 'invalid_phone', fallback='1380013800'),
-            'screenshot_dir': self.config.get('test', 'screenshot_dir', fallback='ui_case/screenshots'),
+            'screenshot_dir': self.config.get('test', 'screenshot_dir', fallback='ui_case/reports/allure-results'),
             'report_dir': self.config.get('test', 'report_dir', fallback='ui_case/reports'),
             'screenshot_on_failure': self.config.getboolean('test', 'screenshot_on_failure', fallback=True),
             'save_html_on_failure': self.config.getboolean('test', 'save_html_on_failure', fallback=False)
