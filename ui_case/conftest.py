@@ -56,28 +56,31 @@ def pytest_configure(config):
     )
     
     # 设置Allure报告
-    if config.getoption("--report") == "allure":
-        import os
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        
-        # 获取项目根目录（ui_case的父目录）
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(current_dir)
-        
-        # 构建基于项目根目录的绝对路径
-        allure_report_dir = os.path.join(project_root, "ui_case", "reports", "allure-report")
-        allure_results_dir = os.path.join(project_root, "ui_case", "reports", "allure-results")
-        
-        # 创建目录
-        os.makedirs(allure_report_dir, exist_ok=True)
-        os.makedirs(allure_results_dir, exist_ok=True)
-        
-        # 设置Allure环境变量
-        os.environ['ALLURE_RESULTS'] = allure_results_dir
-        
-        # 配置Allure
+    # 无论是否指定--report参数，都确保Allure目录配置
+    import os
+    from datetime import datetime
+    
+    # 获取项目根目录（ui_case的父目录）
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(current_dir)
+    
+    # 构建基于项目根目录的绝对路径
+    allure_results_dir = os.path.join(project_root, "ui_case", "reports", "allure-results")
+    allure_report_dir = os.path.join(project_root, "ui_case", "reports", "allure-report")
+    
+    # 创建目录
+    os.makedirs(allure_results_dir, exist_ok=True)
+    os.makedirs(allure_report_dir, exist_ok=True)
+    
+    # 设置Allure环境变量
+    os.environ['ALLURE_RESULTS'] = allure_results_dir
+    
+    # 如果命令行没有指定--alluredir，则设置默认值
+    if not config.getoption("--alluredir"):
         config.option.allure_report_dir = allure_report_dir
         config.option.allure_results_dir = allure_results_dir
+        # 设置alluredir参数，以便allure-pytest插件使用
+        config.option.alluredir = allure_results_dir
 
 
 @pytest.fixture(scope="session")
