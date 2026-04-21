@@ -6,7 +6,11 @@ import sys
 import os
 import argparse
 import subprocess
+import shutil
 from datetime import datetime
+
+from ui_case.utils.config_manager import ConfigManager
+from ui_case.utils.cleanup_manager import CleanupManager
 
 
 def parse_args():
@@ -42,6 +46,20 @@ def parse_args():
 
 def run_tests(args):
     """运行测试"""
+    # 初始化配置和清理管理器
+    config_manager = ConfigManager()
+    cleanup_manager = CleanupManager(config_manager)
+    
+    # 检查并执行自动清理
+    if cleanup_manager.increment_and_check():
+        print("执行自动清理...")
+        cleanup_manager.cleanup_all()
+    
+    # 如果指定了--clean参数，执行按需清理
+    if args.clean:
+        print("执行按需清理...")
+        cleanup_manager.cleanup_on_demand(screenshot_days=7, report_days=7)
+    
     # 构建pytest命令
     cmd = ['pytest']
     
@@ -95,17 +113,56 @@ def run_tests(args):
     # 生成报告
     if args.report == 'allure' and result.returncode == 0:
         print("生成Allure报告...")
-        allure_cmd = ['allure', 'generate', allure_results_dir, '-o', allure_report_dir, '--clean']
-        subprocess.run(allure_cmd)
         
-        # 创建latest链接
-        latest_dir = os.path.join(project_root, 'ui_case', 'reports', 'latest')
-        if os.path.islink(latest_dir):
-            os.unlink(latest_dir)
-        os.symlink(allure_report_dir, latest_dir)
+        # 查找allure命令路径
+        allure_path = shutil.which('allure')
+        if allure_path is None:
+            # 尝试查找allure.bat（Windows）
+            allure_path = shutil.which('allure.bat')
         
-        print(f"报告已生成: {allure_report_dir}")
-        print(f"使用命令查看报告: allure open {latest_dir}")
+        if allure_path is None:
+            # 尝试使用已知路径
+            known_paths = [
+                'G:\\allure-2.34.0\\allure-2.34.0\\bin\\allure.bat',
+                'C:\\Program Files\\allure\\bin\\allure.bat',
+                '/usr/local/bin/allure',
+                '/usr/bin/allure'
+            ]
+            for path in known_paths:
+                if os.path.exists(path):
+                    allure_path = path
+                    break
+        
+        if allure_path is None:
+            print("警告: 未找到allure命令，跳过报告生成")
+            print("请安装allure命令行工具或将其添加到PATH环境变量")
+        else:
+            try:
+                allure_cmd = [allure_path, 'generate', allure_results_dir, '-o', allure_report_dir, '--clean']
+                print(f"执行Allure命令: {' '.join(allure_cmd)}")
+                subprocess.run(allure_cmd, check=True)
+                
+                # 创建latest链接
+                latest_dir = os.path.join(project_root, 'ui_case', 'reports', 'latest')
+                try:
+                    if os.path.islink(latest_dir):
+                        os.unlink(latest_dir)
+                    os.symlink(allure_report_dir, latest_dir)
+                    print(f"创建latest符号链接: {latest_dir} -> {allure_report_dir}")
+                except Exception as e:
+                    print(f"警告: 创建latest符号链接失败: {e}")
+                    print(f"最新报告目录: {allure_report_dir}")
+                
+                print(f"报告已生成: {allure_report_dir}")
+                print(f"使用命令查看报告: allure open {latest_dir}")
+            except FileNotFoundError:
+                print(f"错误: allure命令不存在于路径: {allure_path}")
+                print("请检查allure安装路径")
+            except subprocess.CalledProcessError as e:
+                print(f"生成Allure报告失败，退出码: {e.returncode}")
+                print(f"错误输出: {e.stderr}")
+            except Exception as e:
+                print(f"生成Allure报告时发生异常: {e}")
     
     return result.returncode
 
@@ -152,12 +209,7 @@ def main():
     """主函数"""
     args = parse_args()
     
-    # 清理旧报告
-    if args.clean:
-        print("清理旧报告...")
-        clean_reports()
-    
-    # 运行测试
+    # 运行测试（清理逻辑已在run_tests中处理）
     return_code = run_tests(args)
     
     # 返回退出码

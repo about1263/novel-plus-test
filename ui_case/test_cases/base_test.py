@@ -7,6 +7,7 @@ import logging
 import allure
 import time
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from ui_case.utils.browser_manager import BrowserManager
@@ -36,16 +37,8 @@ class BaseUITest:
         driver = browser_manager.create_driver()
         yield driver
         
-        # 测试结束后截图（如果配置允许）
-        try:
-            test_name = self._get_test_name()
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            browser_manager.take_screenshot(f"{test_name}_{timestamp}")
-        except:
-            pass
-        finally:
-            # 确保每个测试结束后关闭浏览器驱动
-            browser_manager.quit_driver()
+        # 确保每个测试结束后关闭浏览器驱动
+        browser_manager.quit_driver()
     
     @pytest.fixture(scope="function", autouse=True)
     def login_page(self, driver, config):
@@ -65,16 +58,18 @@ class BaseUITest:
         # 清除现有处理器
         logger.handlers.clear()
         
-        # 文件处理器
+        # 文件处理器（使用轮转日志）
         log_file = config.get_log_file()
-        file_handler = logging.FileHandler(log_file, encoding='utf-8')
+        max_bytes = logging_config.get('max_bytes', 10*1024*1024)  # 默认10MB
+        backup_count = logging_config.get('backup_count', 5)       # 默认5个备份
+        file_handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count, encoding='utf-8')
         file_handler.setLevel(getattr(logging, logging_config['log_level']))
         file_formatter = logging.Formatter(logging_config['log_format'])
         file_handler.setFormatter(file_formatter)
         logger.addHandler(file_handler)
         
         # 控制台处理器
-        if logging_config['console_output']:
+        if logging_config.get('console_output', True):
             console_handler = logging.StreamHandler()
             console_handler.setLevel(getattr(logging, logging_config['log_level']))
             console_formatter = logging.Formatter(logging_config['log_format'])

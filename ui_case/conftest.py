@@ -77,6 +77,7 @@ def pytest_configure(config):
         
         # 配置Allure
         config.option.allure_report_dir = allure_report_dir
+        config.option.allure_results_dir = allure_results_dir
 
 
 @pytest.fixture(scope="session")
@@ -114,14 +115,6 @@ def driver(browser_manager):
     """浏览器驱动fixture"""
     driver = browser_manager.create_driver()
     yield driver
-    
-    # 测试结束后截图
-    try:
-        test_name = request.node.name
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        browser_manager.take_screenshot(f"{test_name}_{timestamp}")
-    except:
-        pass
 
 
 @pytest.fixture(scope="session")
