@@ -21,7 +21,7 @@ class LoginPage(BasePage):
     # 登录按钮
     LOGIN_BUTTON = (By.ID, "btnLogin")
     # 错误提示信息
-    ERROR_MESSAGE = (By.CLASS_NAME, "error_message")
+    ERROR_MESSAGE = (By.ID, "LabErr")
     # 手机号格式错误提示
     PHONE_FORMAT_ERROR = (By.ID, "phone_format_error")
     # 空值校验提示
@@ -63,9 +63,11 @@ class LoginPage(BasePage):
     
     def get_error_message(self):
         """获取错误提示信息"""
-        if self.is_element_visible(self.ERROR_MESSAGE):
-            return self.get_text(self.ERROR_MESSAGE)
-        return ""
+        try:
+            element = self.wait_for_element_visible(self.ERROR_MESSAGE, timeout=3)
+            return element.text.strip()
+        except Exception:
+            return ""
     
     def get_phone_format_error(self):
         """获取手机号格式错误提示"""
