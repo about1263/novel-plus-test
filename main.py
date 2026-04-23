@@ -21,6 +21,15 @@ class NovelTestRunner:
     def __init__(self):
         import json
         self.case_marks = json.loads(read_write_config.getValue('projectConfig', 'case_mark'))
+        self.allure_cmd = self._find_allure()
+
+    def _find_allure(self):
+        allure = shutil.which('allure')
+        if allure:
+            log.info(f"找到Allure: {allure}")
+            return allure
+        log.warning("未找到allure命令，报告将不会自动生成")
+        return None
 
     def run(self, env, case_path, case_mark=None, **kwargs):
         """
@@ -74,28 +83,29 @@ class NovelTestRunner:
                 log.error(f"测试错误:\n{result.stderr}")
             
             # 生成Allure HTML报告到report/
-            try:
-                os.makedirs("report", exist_ok=True)
-                
-                allure_cmd = ["allure", "generate", allure_results_dir, "-o", "report", "--clean"]
-                log.info(f"生成Allure报告: {' '.join(allure_cmd)}")
-                allure_result = subprocess.run(allure_cmd, capture_output=True, text=True)
-                
-                if allure_result.returncode == 0:
-                    log.info(f"Allure报告已生成: report")
-                else:
-                    log.warning(f"Allure报告生成失败: {allure_result.stderr}")
+            if self.allure_cmd:
+                try:
+                    os.makedirs("report", exist_ok=True)
                     
-            except Exception as e:
-                log.warning(f"生成Allure报告时出错: {e}")
-            finally:
-                # 清理临时allure结果目录
-                if os.path.exists(allure_results_dir):
-                    try:
-                        shutil.rmtree(allure_results_dir)
-                        log.info(f"已清理临时目录: {allure_results_dir}")
-                    except Exception as e:
-                        log.warning(f"清理临时目录失败: {e}")
+                    allure_cmd = [self.allure_cmd, "generate", allure_results_dir, "-o", "report", "--clean"]
+                    log.info(f"生成Allure报告: {' '.join(allure_cmd)}")
+                    allure_result = subprocess.run(allure_cmd, capture_output=True, text=True, shell=True)
+                    
+                    if allure_result.returncode == 0:
+                        log.info(f"Allure报告已生成: report")
+                    else:
+                        log.warning(f"Allure报告生成失败: {allure_result.stderr}")
+                except Exception as e:
+                    log.warning(f"生成Allure报告时出错: {e}")
+                finally:
+                    if os.path.exists(allure_results_dir):
+                        try:
+                            shutil.rmtree(allure_results_dir)
+                            log.info(f"已清理临时目录: {allure_results_dir}")
+                        except Exception as e:
+                            log.warning(f"清理临时目录失败: {e}")
+            else:
+                log.warning("Allure命令不可用，跳过报告生成")
             
             return result.returncode == 0
             
@@ -137,7 +147,7 @@ class NovelTestRunner:
         """
         运行所有模块的测试，各模块独立并发执行，最后合并报告到report/
         """
-        modules = ['user', 'book', 'author', 'search', 'news', 'home', 'resource', 'ai']
+        modules = ['book_rank', 'book_search', 'book_shelf', 'comment', 'novel_management', 'reading_record', 'user_login']
         results = {}
         
         # 清理旧的report目录
@@ -170,12 +180,12 @@ class NovelTestRunner:
         
         # 合并所有模块的Allure结果到report/
         existing_dirs = [d for d in module_results_dirs.values() if os.path.exists(d) and os.listdir(d)]
-        if existing_dirs:
+        if existing_dirs and self.allure_cmd:
             try:
                 os.makedirs("report", exist_ok=True)
-                merge_cmd = ["allure", "generate", "--clean", "-o", "report"] + existing_dirs
+                merge_cmd = [self.allure_cmd, "generate", "--clean", "-o", "report"] + existing_dirs
                 log.info(f"合并Allure报告: {' '.join(merge_cmd)}")
-                merge_result = subprocess.run(merge_cmd, capture_output=True, text=True)
+                merge_result = subprocess.run(merge_cmd, capture_output=True, text=True, shell=True)
                 if merge_result.returncode == 0:
                     log.info(f"Allure报告已合并生成到 report/")
                 else:
@@ -199,8 +209,8 @@ def main():
     parser = argparse.ArgumentParser(description='小说网站测试运行器')
     parser.add_argument('--env', required=True, choices=['online', 'lane'], 
                        help='测试环境: online(生产) 或 lane(测试)')
-    parser.add_argument('--work_path', required=True, 
-                       help='测试用例路径，多个路径用逗号分隔')
+    parser.add_argument('--work_path',
+                       help='测试用例路径，多个路径用逗号分隔（使用--all_modules时无需此参数）')
     parser.add_argument('--mark', help='测试用例标记')
     parser.add_argument('--workers', type=int, default=1, 
                        help='并发工作进程数，默认1')
@@ -208,6 +218,9 @@ def main():
                        help='运行所有模块测试')
     
     args = parser.parse_args()
+    
+    if not args.all_modules and not args.work_path:
+        parser.error("请指定 --work_path 或使用 --all_modules")
     
     runner = NovelTestRunner()
     
