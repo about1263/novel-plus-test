@@ -247,3 +247,11 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 使用示例:
+#   运行单个模块:          python main.py --env lane --work_path api_case/user_login
+#   运行多个模块:          python main.py --env lane --work_path api_case/user_login,api_case/book_shelf
+#   运行全部7个模块:       python main.py --env lane --all_modules
+#   指定并发进程数:        python main.py --env lane --all_modules --workers 3
+#   指定环境(online/lane): python main.py --env online --work_path api_case/book_search
+

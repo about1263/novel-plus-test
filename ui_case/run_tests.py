@@ -110,8 +110,8 @@ def run_tests(args):
     print(f"执行命令: {' '.join(cmd)}")
     result = subprocess.run(cmd)
     
-    # 生成报告
-    if args.report == 'allure' and result.returncode == 0:
+    # 生成报告（不论测试成功或失败都生成）
+    if args.report == 'allure':
         print("生成Allure报告...")
         
         # 查找allure命令路径
@@ -218,3 +218,12 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# 使用示例:
+#   运行所有UI测试:             python -m ui_case.run_tests
+#   运行指定模块:               python -m ui_case.run_tests --test_module test_login
+#   运行指定用例:               python -m ui_case.run_tests --test_module test_login --test_case test_normal_login
+#   使用Edge浏览器:             python -m ui_case.run_tests --browser edge
+#   启用无头模式:               python -m ui_case.run_tests --headless
+#   指定环境(online/lane):      python -m ui_case.run_tests --env online
+#   查看报告:                   allure open ui_case/reports/latest
