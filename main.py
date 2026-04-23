@@ -35,16 +35,19 @@ class NovelTestRunner:
         # 设置环境变量
         os.environ['NOVEL_ENV'] = env
         
-        # 清理旧的report目录
-        if os.path.exists("report"):
-            try:
-                shutil.rmtree("report")
-                log.info("已清理旧的report目录")
-            except Exception as e:
-                log.warning(f"清理report目录失败: {e}")
+        allure_results_dir = "allure-results"
+        
+        # 清理旧的report和临时allure结果目录
+        for d in ["report", allure_results_dir]:
+            if os.path.exists(d):
+                try:
+                    shutil.rmtree(d)
+                    log.info(f"已清理旧的{d}目录")
+                except Exception as e:
+                    log.warning(f"清理{d}目录失败: {e}")
         
         # 构建pytest命令
-        pytest_cmd = ["pytest", "-v", "--alluredir", "report"]
+        pytest_cmd = ["pytest", "-v", "--alluredir", allure_results_dir]
         
         # 添加用例标记
         if case_mark:
@@ -70,44 +73,29 @@ class NovelTestRunner:
             if result.stderr:
                 log.error(f"测试错误:\n{result.stderr}")
             
-            # 生成Allure HTML报告
+            # 生成Allure HTML报告到report/
             try:
-                report_dir = "allure-reports/report"
+                os.makedirs("report", exist_ok=True)
                 
-                # 确保报告目录存在
-                os.makedirs("allure-reports", exist_ok=True)
-                
-                # 生成HTML报告
-                allure_cmd = ["allure", "generate", "report", "-o", report_dir]
+                allure_cmd = ["allure", "generate", allure_results_dir, "-o", "report", "--clean"]
                 log.info(f"生成Allure报告: {' '.join(allure_cmd)}")
                 allure_result = subprocess.run(allure_cmd, capture_output=True, text=True)
                 
                 if allure_result.returncode == 0:
-                    log.info(f"Allure报告已生成: {report_dir}")
-                    
-                    # 创建latest符号链接（Windows上创建目录副本或使用junction）
-                    latest_dir = "allure-reports/latest"
-                    try:
-                        # 删除旧的latest链接
-                        if os.path.exists(latest_dir):
-                            if os.path.islink(latest_dir):
-                                os.unlink(latest_dir)
-                            elif os.path.isdir(latest_dir):
-                                shutil.rmtree(latest_dir)
-                            else:
-                                os.remove(latest_dir)
-                        
-                        # 在Windows上创建目录副本
-                        if os.path.exists(report_dir):
-                            shutil.copytree(report_dir, latest_dir, dirs_exist_ok=True)
-                            log.info(f"最新报告副本已创建: {latest_dir}")
-                    except Exception as link_error:
-                        log.warning(f"创建latest链接失败: {link_error}")
+                    log.info(f"Allure报告已生成: report")
                 else:
                     log.warning(f"Allure报告生成失败: {allure_result.stderr}")
                     
             except Exception as e:
                 log.warning(f"生成Allure报告时出错: {e}")
+            finally:
+                # 清理临时allure结果目录
+                if os.path.exists(allure_results_dir):
+                    try:
+                        shutil.rmtree(allure_results_dir)
+                        log.info(f"已清理临时目录: {allure_results_dir}")
+                    except Exception as e:
+                        log.warning(f"清理临时目录失败: {e}")
             
             return result.returncode == 0
             
@@ -115,20 +103,62 @@ class NovelTestRunner:
             log.error(f"执行测试失败: {e}")
             return False
 
+    def _run_module(self, env, case_path, results_dir, **kwargs):
+        """
+        运行单个模块的测试（供并发调用），只生成原始结果，不生成HTML报告
+        """
+        os.environ['NOVEL_ENV'] = env
+        
+        if os.path.exists(results_dir):
+            try:
+                shutil.rmtree(results_dir)
+            except Exception:
+                pass
+        
+        pytest_cmd = ["pytest", "-v", "--alluredir", results_dir, case_path]
+        
+        if kwargs.get('workers'):
+            pytest_cmd.extend(["-n", str(kwargs['workers'])])
+        
+        log.info(f"执行命令: {' '.join(pytest_cmd)}")
+        
+        try:
+            result = subprocess.run(pytest_cmd, capture_output=True, text=True)
+            if result.stdout:
+                log.info(f"模块测试输出:\n{result.stdout}")
+            if result.stderr:
+                log.error(f"模块测试错误:\n{result.stderr}")
+            return result.returncode == 0
+        except Exception as e:
+            log.error(f"模块测试执行失败: {e}")
+            return False
+
     def run_all_modules(self, env, **kwargs):
         """
-        运行所有模块的测试
+        运行所有模块的测试，各模块独立并发执行，最后合并报告到report/
         """
         modules = ['user', 'book', 'author', 'search', 'news', 'home', 'resource', 'ai']
+        results = {}
+        
+        # 清理旧的report目录
+        if os.path.exists("report"):
+            try:
+                shutil.rmtree("report")
+                log.info("已清理旧的report目录")
+            except Exception as e:
+                log.warning(f"清理report目录失败: {e}")
+        
+        module_results_dirs = {}
         
         with concurrent.futures.ThreadPoolExecutor(max_workers=len(modules)) as executor:
             futures = {}
             for module in modules:
-                future = executor.submit(self.run, env, f"api_case/{module}", **kwargs)
+                module_results_dir = f"allure-results-{module}"
+                module_results_dirs[module] = module_results_dir
+                future = executor.submit(self._run_module, env, f"api_case/{module}", module_results_dir, **kwargs)
                 futures[future] = module
             
             # 等待所有任务完成
-            results = {}
             for future in concurrent.futures.as_completed(futures):
                 module = futures[future]
                 try:
@@ -137,8 +167,31 @@ class NovelTestRunner:
                 except Exception as e:
                     results[module] = False
                     log.error(f"模块 {module} 测试异常: {e}")
-            
-            return results
+        
+        # 合并所有模块的Allure结果到report/
+        existing_dirs = [d for d in module_results_dirs.values() if os.path.exists(d) and os.listdir(d)]
+        if existing_dirs:
+            try:
+                os.makedirs("report", exist_ok=True)
+                merge_cmd = ["allure", "generate", "--clean", "-o", "report"] + existing_dirs
+                log.info(f"合并Allure报告: {' '.join(merge_cmd)}")
+                merge_result = subprocess.run(merge_cmd, capture_output=True, text=True)
+                if merge_result.returncode == 0:
+                    log.info(f"Allure报告已合并生成到 report/")
+                else:
+                    log.warning(f"合并Allure报告失败: {merge_result.stderr}")
+            except Exception as e:
+                log.warning(f"合并Allure报告时出错: {e}")
+            finally:
+                # 清理所有临时目录
+                for d in existing_dirs:
+                    try:
+                        shutil.rmtree(d)
+                        log.info(f"已清理临时目录: {d}")
+                    except Exception as e:
+                        log.warning(f"清理临时目录 {d} 失败: {e}")
+        
+        return results
 
 
 def main():

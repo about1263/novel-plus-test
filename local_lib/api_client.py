@@ -333,7 +333,7 @@ class NovelAPIClient:
         # 注意：这里需要处理文件上传，简化实现
         with open(file_path, 'rb') as f:
             files = {'file': f}
-            return self.post('/api/front/resource/image', files=files)
+            return self.post('/file/picUpload', files=files)
 
 
 # 全局API客户端实例

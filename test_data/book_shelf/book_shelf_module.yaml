@@ -1,5 +1,5 @@
 # 书架管理模块测试数据
-# 对应 YDSG_API_01 到 YDSG_API_03 测试用例
+# 对应 YDSG_API_01 到 YDSG_API_10 测试用例
 
 test_cases:
   # YDSG_API_01: 查询小说是否已加入书架 - 已加入情况
@@ -182,4 +182,28 @@ test_cases:
           keywords: ["SUCCESS", "成功"]
           description: "响应消息应包含成功提示"
     tags: ["user", "book_shelf", "add", "validation"]
+    auth_required: true
+
+  # YDSG_API_10: 书架查询 - 是否在书架查询
+  query_is_in_shelf_book_10:
+    id: "YDSG_API_10"
+    title: "书架查询 - 是否在书架查询"
+    description: "查询指定小说是否已加入书架，验证返回是否在书架状态"
+    request:
+      method: "GET"
+      endpoint: "/user/queryIsInShelf"
+      params:
+        bookId: 1262260513468559361  # 测试小说ID
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "inShelf"
+          description: "响应中应包含inShelf字段"
+        - check_type: "field_equals"
+          field: "inShelf"
+          value: true
+          description: "inShelf字段值应为true（已加入书架）"
+    tags: ["user", "book_shelf", "query", "functional", "positive"]
     auth_required: true
