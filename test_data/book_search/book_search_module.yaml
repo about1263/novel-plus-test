@@ -1,88 +1,72 @@
-# 小说搜索测试数据
-# 对应 TestBookSearch 测试类
+# 小说搜索模块测试数据
+# 对应 XSJS_API_01 到 XSJS_API_06 测试用例
 
 test_cases:
-  # 分页搜索测试用例
-  search_by_page:
-    id: "TR_BOOK_006"
-    title: "分页搜索接口测试"
-    description: "测试分页搜索接口"
-    request:
-      method: "GET"
-      endpoint: "/book/searchByPage"
-      params:
-        keyword: "测试"
-        page: 1
-        pageSize: 20
-    expected:
-      code: "00000"
-      data_exists: true
-      data_checks: []
-    tags: ["book", "search", "functional"]
-  
-  # 关键字搜索验证
-  keyword_search_highlight:
-    id: "TR_BOOK_007"
-    title: "关键字搜索高亮显示验证"
+  # XSJS_API_01: 关键字搜索验证
+  keyword_search_verification:
+    id: "XSJS_API_01"
+    title: "关键字搜索验证"
     description: "验证输入小说名称关键字，是否返回匹配结果列表及高亮显示"
     request:
       method: "GET"
       endpoint: "/book/searchByPage"
       params:
-        keyword: "测试小说"
+        keyword: "邻家"
         page: 1
         pageSize: 10
     expected:
-      code: "00000"
+      code: "200"
       data_exists: true
       data_checks:
         - check_type: "list_not_empty"
           description: "搜索结果列表不应为空"
         - check_type: "keyword_in_results"
-          keyword: "测试小说"
+          keyword: "邻家"
           field: "bookName"
-          description: "结果中应包含关键字'测试小说'"
-    tags: ["book", "search", "functional", "highlight"]
-  
-  # 分类筛选组合验证
+          description: "结果中应包含关键字'邻家'"
+    tags: ["book", "search", "functional", "keyword"]
+    auth_required: false
+
+  # XSJS_API_02: 分类筛选组合验证
   category_filter_combination:
-    id: "TR_BOOK_008"
+    id: "XSJS_API_02"
     title: "分类筛选组合验证"
-    description: "验证选择玄幻分类+连载状态+30-50万字的条件，返回结果是否符合筛选逻辑"
+    description: "验证选择都市言情分类+连载状态+30万字以下的条件，返回结果是否符合筛选逻辑"
     request:
       method: "GET"
       endpoint: "/book/searchByPage"
       params:
-        catId: 1  # 玄幻分类ID，假设为1
-        updateStatus: 1  # 连载状态，假设1表示连载
-        wordCountMin: 30  # 最小字数（万字）
-        wordCountMax: 50  # 最大字数（万字）
+        catId: 3  # 都市言情分类ID，根据实际数据为3
+        bookStatus: 0  # 连载状态，根据实际数据0表示连载
+        wordCountMin: 0  # 最小字数（万字）
+        wordCountMax: 30  # 最大字数（万字）
         page: 1
         pageSize: 10
     expected:
-      code: "00000"
+      code: "200"
       data_exists: true
       data_checks:
         - check_type: "list_not_empty"
           description: "筛选结果列表不应为空"
         - check_type: "field_equals"
           field: "catId"
-          value: 1
-          description: "所有结果的分类ID应为1（玄幻）"
+          value: "3"
+          description: "所有结果的分类ID应为3（都市言情）"
         - check_type: "field_equals"
           field: "bookStatus"
-          value: 1  # 假设1表示连载状态
+          value: "0"  # 根据实际数据0表示连载状态
           description: "所有结果的小说状态应为连载"
         - check_type: "word_count_range"
-          min: 30
-          max: 50
-          description: "所有结果的字数应在30-50万字之间"
+          min: 0
+          max: 30
+          description: "所有结果的字数应在30万字以下"
     tags: ["book", "search", "filter", "functional"]
-  
-  # 排序功能验证
-  sort_by_update_time:
-    id: "TR_BOOK_009"
-    title: "更新时间排序验证"
+    auth_required: false
+
+  # XSJS_API_03: 排序功能验证
+  sort_function_verification:
+    id: "XSJS_API_03"
+    title: "排序功能验证"
     description: "验证点击'更新时间'排序，结果是否按时间降序排列"
     request:
       method: "GET"
@@ -91,9 +75,9 @@ test_cases:
         keyword: ""
         page: 1
         pageSize: 10
-        orderBy: "lastIndexUpdateTime desc"  # 按更新时间降序排序
+        orderBy: "updateTime desc"  # 按更新时间降序排序
     expected:
-      code: "00000"
+      code: "200"
       data_exists: true
       data_checks:
         - check_type: "list_not_empty"
@@ -102,10 +86,11 @@ test_cases:
           field: "lastIndexUpdateTime"
           description: "结果应按更新时间降序排列"
     tags: ["book", "search", "sort", "functional"]
-  
-  # 无结果处理验证
+    auth_required: false
+
+  # XSJS_API_04: 无结果处理验证
   no_results_handling:
-    id: "TR_BOOK_010"
+    id: "XSJS_API_04"
     title: "无结果处理验证"
     description: "验证输入不存在的关键字，是否返回空列表及友好提示"
     request:
@@ -116,7 +101,7 @@ test_cases:
         page: 1
         pageSize: 10
     expected:
-      code: "00000"
+      code: "200"
       data_exists: true
       data_checks:
         - check_type: "list_empty_or_minimal"
@@ -126,27 +111,50 @@ test_cases:
           keywords: ["无结果", "未找到", "empty"]
           description: "响应消息应包含友好提示"
     tags: ["book", "search", "edge-case", "functional"]
-  
-  # 作者搜索验证
-  author_search:
-    id: "TR_BOOK_011"
-    title: "作者搜索验证"
-    description: "验证输入作者名称，是否正确返回该作者的所有作品列表"
+    auth_required: false
+
+  # XSJS_API_05: 分页功能验证
+  pagination_function_verification:
+    id: "XSJS_API_05"
+    title: "分页功能验证"
+    description: "验证分页功能，输入page=2, pageSize=20"
     request:
       method: "GET"
       endpoint: "/book/searchByPage"
       params:
-        authorName: "测试作者"  # 作者名称参数，假设为authorName
+        keyword: "测试"
+        page: 2
+        pageSize: 20
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "分页搜索结果列表不应为空"
+    tags: ["book", "search", "pagination", "functional"]
+    auth_required: false
+
+  # XSJS_API_06: 作者搜索验证
+  author_search_verification:
+    id: "XSJS_API_06"
+    title: "作者搜索验证"
+    description: "验证输入作者名称，是否返回包含该作者的作品列表"
+    request:
+      method: "GET"
+      endpoint: "/book/searchByPage"
+      params:
+        authorName: "lil_king"  # 作者名称参数
         page: 1
         pageSize: 10
     expected:
-      code: "00000"
+      code: "200"
       data_exists: true
       data_checks:
         - check_type: "list_not_empty"
           description: "作者搜索结果列表不应为空"
-        - check_type: "field_equals"
+        - check_type: "keyword_in_results"
+          keyword: "lil_king"
           field: "authorName"
-          value: "测试作者"
-          description: "所有结果的作者名称应为'测试作者'"
+          description: "结果中应包含作者'lil_king'的作品"
     tags: ["book", "search", "author", "functional"]
+    auth_required: false
