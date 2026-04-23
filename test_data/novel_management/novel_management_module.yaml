@@ -1,0 +1,148 @@
+# 小说管理&章节管理模块测试数据
+# 包含小说发布、章节新增/修改/删除、权限控制、数据统计测试用例
+
+test_cases:
+
+  # ============================================
+  # 小说管理 - Novel Management
+  # ============================================
+
+  # 小说发布验证
+  publish_book_normal:
+    id: "ZZGL_API_01"
+    title: "小说发布验证"
+    description: "验证作者发布小说的功能，使用正确参数发布新书，验证发布成功"
+    request:
+      method: "POST"
+      endpoint: "/author/addBook"
+      data:
+        bookName: "placeholder"  # 测试代码中动态生成唯一名称
+        bookDesc: "自动化测试发布的小说描述"
+        catId: 1
+        catName: "玄幻奇幻"
+        workDirection: 0
+        picUrl: ""
+        bookStatus: 0
+        wordCount: 0
+    expected:
+      code: "200"
+    tags: ["author", "novel-management", "create", "positive"]
+    auth_required: true
+
+  # 小说封面修改验证
+  update_book_pic_normal:
+    id: "ZZGL_API_03"
+    title: "小说封面修改验证"
+    description: "验证作者修改小说封面功能，传入有效的bookId和封面URL"
+    request:
+      method: "POST"
+      endpoint: "/author/updateBookPic"
+      data:
+        bookId: "placeholder"
+        bookPic: "/localPic/test_cover.jpg"
+    expected:
+      code: "200"
+    tags: ["author", "novel-management", "update", "positive"]
+    auth_required: true
+
+  # ============================================
+  # 章节管理 - Chapter Management
+  # ============================================
+
+  # 新增章节验证
+  add_chapter_normal:
+    id: "ZZGL_API_02"
+    title: "新增章节验证"
+    description: "验证作者新增章节的功能，传入有效的bookId和章节内容"
+    request:
+      method: "POST"
+      endpoint: "/author/addBookContent"
+      data:
+        bookId: "placeholder"
+        indexName: "placeholder"
+        content: "自动化测试新增的章节内容"
+        isVip: 0
+    expected:
+      code: "200"
+    tags: ["author", "chapter-management", "create", "positive"]
+    auth_required: true
+
+  # 章节修改验证
+  update_chapter_normal:
+    id: "ZZGL_API_04"
+    title: "章节修改验证"
+    description: "验证作者修改章节内容的功能，传入有效的indexId和更新后的内容"
+    request:
+      method: "POST"
+      endpoint: "/author/updateBookContent"
+      data:
+        indexId: "placeholder"
+        indexName: "placeholder"
+        content: "自动化测试更新后的章节内容"
+    expected:
+      code: "200"
+    tags: ["author", "chapter-management", "update", "positive"]
+    auth_required: true
+
+  # 章节删除验证
+  delete_chapter_normal:
+    id: "ZZGL_API_05"
+    title: "章节删除验证"
+    description: "验证作者删除章节的功能，传入有效的indexId"
+    request:
+      method: "DELETE"
+      endpoint: "/author/deleteIndex/{indexId}"
+      path_params:
+        indexId: "placeholder"
+    expected:
+      code: "200"
+    tags: ["author", "chapter-management", "delete", "positive"]
+    auth_required: true
+
+  # ============================================
+  # 权限控制 - Authorization Control
+  # ============================================
+
+  # 未授权访问验证
+  unauthorized_access_verify:
+    id: "ZZGL_API_06"
+    title: "未授权访问验证"
+    description: "使用未登录客户端调用作者接口，验证接口拒绝了未授权请求（返回非200状态码）"
+    request:
+      method: "GET"
+      endpoint: "/author/listBookByPage"
+      params:
+        curr: 1
+        limit: 10
+    expected:
+      code: "!200"
+    tags: ["author", "auth-control", "negative", "security"]
+    auth_required: false
+
+  # ============================================
+  # 数据统计 - Data Statistics
+  # ============================================
+
+  # 小说列表数据查看验证
+  list_book_data_verify:
+    id: "ZZGL_API_07"
+    title: "小说数据查看验证"
+    description: "验证作者小说列表返回数据的结构和字段完整性"
+    request:
+      method: "GET"
+      endpoint: "/author/listBookByPage"
+      params:
+        curr: 1
+        limit: 10
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "list"
+          description: "响应中应包含list字段"
+        - check_type: "field_exists"
+          field: "total"
+          description: "响应中应包含total字段"
+    tags: ["author", "data-statistics", "functional"]
+    auth_required: true

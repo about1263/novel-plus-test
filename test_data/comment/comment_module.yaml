@@ -1,0 +1,171 @@
+# 评论管理模块测试数据
+# 对应 YDSG_API_08 到 YDSG_API_09 测试用例
+
+test_cases:
+  # YDSG_API_08: 评论列表分页查询 - 正常查询
+  list_comment_by_page_normal:
+    id: "YDSG_API_08"
+    title: "评论列表分页查询 - 正常查询"
+    description: "使用有效的bookId查询小说评论列表，验证返回正确的评论数据"
+    request:
+      method: "GET"
+      endpoint: "/book/listCommentByPage"
+      params:
+        bookId: 1262260513468559361
+        page: 1
+        pageSize: 5
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "评论列表不应为空"
+        - check_type: "field_exists"
+          field: "commentContent"
+          description: "评论项应包含commentContent字段"
+        - check_type: "field_exists"
+          field: "createTime"
+          description: "评论项应包含createTime字段"
+    tags: ["book", "comment", "list", "functional", "positive"]
+    auth_required: false
+
+  # YDSG_API_08: 评论列表分页查询 - 指定分页参数
+  list_comment_by_page_custom_params:
+    id: "YDSG_API_08"
+    title: "评论列表分页查询 - 指定分页参数"
+    description: "使用自定义分页参数查询评论列表，验证分页功能正常"
+    request:
+      method: "GET"
+      endpoint: "/book/listCommentByPage"
+      params:
+        bookId: 1262260513468559361
+        page: 1
+        pageSize: 10
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "评论列表不应为空"
+        - check_type: "field_exists"
+          field: "createUserId"
+          description: "评论项应包含createUserId字段"
+    tags: ["book", "comment", "list", "pagination", "functional"]
+    auth_required: false
+
+  # YDSG_API_08: 评论列表分页查询 - 无效bookId
+  list_comment_by_page_invalid_book_id:
+    id: "YDSG_API_08"
+    title: "评论列表分页查询 - 无效bookId"
+    description: "使用无效的bookId查询评论列表，验证返回空列表"
+    request:
+      method: "GET"
+      endpoint: "/book/listCommentByPage"
+      params:
+        bookId: -1
+        page: 1
+        pageSize: 5
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_empty_or_minimal"
+          max_items: 0
+          description: "无效bookId时应返回空列表"
+    tags: ["book", "comment", "list", "negative", "validation"]
+    auth_required: false
+
+  # YDSG_API_08: 评论列表分页查询 - 缺少bookId
+  list_comment_by_page_missing_book_id:
+    id: "YDSG_API_08"
+    title: "评论列表分页查询 - 缺少bookId"
+    description: "不传bookId参数查询评论列表，验证接口错误处理"
+    request:
+      method: "GET"
+      endpoint: "/book/listCommentByPage"
+      params:
+        page: 1
+        pageSize: 5
+    expected:
+      code: "!200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["异常", "错误"]
+          description: "响应消息应包含异常提示"
+    tags: ["book", "comment", "list", "negative", "validation"]
+    auth_required: false
+
+  # YDSG_API_09: 评论点赞 - 正常点赞
+  toggle_comment_like_normal:
+    id: "YDSG_API_09"
+    title: "评论点赞 - 正常点赞"
+    description: "对评论进行点赞操作，验证点赞成功"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleCommentLike"
+      params:
+        commentId: 1
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "响应消息应包含成功提示"
+    tags: ["book", "comment", "like", "functional", "positive"]
+    auth_required: true
+
+  # YDSG_API_09: 评论点赞 - 无效commentId
+  toggle_comment_like_invalid_comment_id:
+    id: "YDSG_API_09"
+    title: "评论点赞 - 无效commentId"
+    description: "使用无效的commentId进行点赞操作，验证服务端处理"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleCommentLike"
+      params:
+        commentId: -1
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "无效commentId时服务端可能返回成功或错误"
+    tags: ["book", "comment", "like", "negative", "validation"]
+    auth_required: true
+
+  # YDSG_API_09: 评论点赞 - 缺少commentId
+  toggle_comment_like_missing_comment_id:
+    id: "YDSG_API_09"
+    title: "评论点赞 - 缺少commentId"
+    description: "不传commentId参数进行点赞操作，验证接口错误处理"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleCommentLike"
+      params:
+    expected:
+      code: "!200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["错误", "参数", "required"]
+          description: "响应消息应包含参数缺失提示"
+    tags: ["book", "comment", "like", "negative", "validation"]
+    auth_required: true
+
+  # YDSG_API_09: 评论点赞 - 再次点击取消点赞
+  toggle_comment_like_cancel:
+    id: "YDSG_API_09"
+    title: "评论点赞 - 再次点击取消点赞"
+    description: "对已点赞的评论再次点击，验证取消点赞"
+    request:
+      method: "POST"
+      endpoint: "/book/toggleCommentLike"
+      params:
+        commentId: 1
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "取消点赞操作应返回成功"
+    tags: ["book", "comment", "like", "functional", "cancel"]
+    auth_required: true

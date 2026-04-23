@@ -1,0 +1,126 @@
+# 阅读记录模块测试数据
+# 对应 YDSG_API_05 到 YDSG_API_06 测试用例
+
+test_cases:
+  # YDSG_API_05: 添加阅读记录 - 正常添加
+  add_read_history_normal:
+    id: "YDSG_API_05"
+    title: "添加阅读记录 - 正常添加"
+    description: "使用有效的bookId和preContentId添加阅读记录，验证添加成功"
+    request:
+      method: "POST"
+      endpoint: "/user/addReadHistory"
+      params:
+        bookId: 1262260513468559361
+        preContentId: 1
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "响应消息应包含成功提示"
+    tags: ["user", "reading_record", "add", "functional", "positive"]
+    auth_required: true
+
+  # YDSG_API_05: 添加阅读记录 - 无效bookId
+  add_read_history_invalid_book_id:
+    id: "YDSG_API_05"
+    title: "添加阅读记录 - 无效bookId"
+    description: "使用无效的bookId添加阅读记录，验证服务端处理"
+    request:
+      method: "POST"
+      endpoint: "/user/addReadHistory"
+      params:
+        bookId: -1
+        preContentId: 1
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "响应消息应包含成功提示"
+    tags: ["user", "reading_record", "add", "negative", "validation"]
+    auth_required: true
+
+  # YDSG_API_05: 添加阅读记录 - 缺少preContentId
+  add_read_history_missing_pre_content_id:
+    id: "YDSG_API_05"
+    title: "添加阅读记录 - 缺少preContentId"
+    description: "添加阅读记录时缺少preContentId参数，验证接口处理"
+    request:
+      method: "POST"
+      endpoint: "/user/addReadHistory"
+      params:
+        bookId: 1262260513468559361
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "缺少参数时服务端可能返回成功或使用默认值"
+    tags: ["user", "reading_record", "add", "negative", "validation"]
+    auth_required: true
+
+  # YDSG_API_06: 分页查询阅读记录 - 正常查询
+  list_read_history_by_page_normal:
+    id: "YDSG_API_06"
+    title: "分页查询阅读记录 - 正常查询"
+    description: "正常分页查询阅读记录，验证返回正确的分页数据"
+    request:
+      method: "GET"
+      endpoint: "/user/listReadHistoryByPage"
+      params:
+        page: 1
+        pageSize: 10
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "阅读记录列表不应为空"
+        - check_type: "field_exists"
+          field: "bookName"
+          description: "阅读记录应包含bookName字段"
+    tags: ["user", "reading_record", "list", "pagination", "functional", "positive"]
+    auth_required: true
+
+  # YDSG_API_06: 分页查询阅读记录 - 指定分页参数
+  list_read_history_by_page_custom_params:
+    id: "YDSG_API_06"
+    title: "分页查询阅读记录 - 指定分页参数"
+    description: "使用自定义分页参数查询阅读记录，验证分页功能"
+    request:
+      method: "GET"
+      endpoint: "/user/listReadHistoryByPage"
+      params:
+        page: 1
+        pageSize: 5
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "阅读记录列表不应为空"
+    tags: ["user", "reading_record", "list", "pagination", "functional"]
+    auth_required: true
+
+  # YDSG_API_06: 分页查询阅读记录 - 无效分页参数
+  list_read_history_by_page_invalid_params:
+    id: "YDSG_API_06"
+    title: "分页查询阅读记录 - 无效分页参数"
+    description: "使用无效的分页参数查询，验证返回错误或默认值"
+    request:
+      method: "GET"
+      endpoint: "/user/listReadHistoryByPage"
+      params:
+        page: -1
+        pageSize: 0
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_empty_or_minimal"
+          max_items: 0
+          description: "无效参数时应返回空列表或使用默认值"
+    tags: ["user", "reading_record", "list", "pagination", "error", "validation"]
+    auth_required: true
