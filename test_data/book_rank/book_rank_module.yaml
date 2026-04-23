@@ -1,0 +1,114 @@
+# 小说榜单查询模块测试数据
+# 对应新书榜单和更新榜单查询测试用例
+
+test_cases:
+  # 新书榜单查询验证
+  new_rank_verification:
+    id: "BDCX_API_01"
+    title: "新书榜单查询验证"
+    description: "验证查询首页新书榜单，是否返回正确的新书列表数据"
+    request:
+      method: "GET"
+      endpoint: "/book/listNewRank"
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "新书榜单列表不应为空"
+        - check_type: "field_exists"
+          field: "bookName"
+          description: "结果中应包含bookName字段"
+        - check_type: "field_exists"
+          field: "authorName"
+          description: "结果中应包含authorName字段"
+        - check_type: "field_exists"
+          field: "catName"
+          description: "结果中应包含catName字段"
+        - check_type: "field_exists"
+          field: "wordCount"
+          description: "结果中应包含wordCount字段"
+        - check_type: "field_exists"
+          field: "lastIndexUpdateTime"
+          description: "结果中应包含lastIndexUpdateTime字段"
+    tags: ["book", "rank", "new", "functional"]
+    auth_required: false
+
+  # 更新榜单查询验证
+  update_rank_verification:
+    id: "BDCX_API_02"
+    title: "更新榜单查询验证"
+    description: "验证查询首页更新榜单，是否返回正确的更新小说列表数据"
+    request:
+      method: "GET"
+      endpoint: "/book/listUpdateRank"
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "更新榜单列表不应为空"
+        - check_type: "field_exists"
+          field: "bookName"
+          description: "结果中应包含bookName字段"
+        - check_type: "field_exists"
+          field: "authorName"
+          description: "结果中应包含authorName字段"
+        - check_type: "field_exists"
+          field: "lastIndexUpdateTime"
+          description: "结果中应包含lastIndexUpdateTime字段"
+        - check_type: "sorted_descending"
+          field: "lastIndexUpdateTime"
+          description: "更新榜单应按最后更新时间降序排列"
+    tags: ["book", "rank", "update", "functional"]
+    auth_required: false
+
+  # 榜单数据结构完整性验证
+  rank_data_structure_verification:
+    id: "BDCX_API_03"
+    title: "榜单数据结构完整性验证"
+    description: "验证榜单返回数据的结构完整性，包含所有必要字段"
+    request:
+      method: "GET"
+      endpoint: "/book/listNewRank"
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "榜单列表不应为空"
+        - check_type: "field_exists"
+          field: "id"
+          description: "结果中应包含id字段"
+        - check_type: "field_exists"
+          field: "picUrl"
+          description: "结果中应包含picUrl字段"
+        - check_type: "field_exists"
+          field: "bookDesc"
+          description: "结果中应包含bookDesc字段"
+        - check_type: "field_exists"
+          field: "lastIndexName"
+          description: "结果中应包含lastIndexName字段"
+    tags: ["book", "rank", "data-structure", "functional"]
+    auth_required: false
+
+  # 榜单数据内容验证
+  rank_data_content_verification:
+    id: "BDCX_API_04"
+    title: "榜单数据内容验证"
+    description: "验证榜单返回数据的内容有效性，如字数应为正数等"
+    request:
+      method: "GET"
+      endpoint: "/book/listNewRank"
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "榜单列表不应为空"
+        - check_type: "keyword_in_results"
+          keyword: "lil_king"
+          field: "authorName"
+          description: "结果中应包含作者'lil_king'的作品"
+    tags: ["book", "rank", "data-content", "functional"]
+    auth_required: false

@@ -230,23 +230,19 @@ def execute_test_case(client, test_case):
     log.info(f"测试用例 {test_case['id']} 执行成功: {test_case['title']}")
 
 
-@allure.feature("小说搜索模块")
-@allure.story("小说搜索功能测试")
-class TestBookSearchModule:
-    """小说搜索模块测试类 - 包含XSJS_API_01到XSJS_API_06所有测试用例，XSJS_API_10有单独的测试方法"""
+@allure.feature("小说榜单查询模块")
+@allure.story("小说榜单查询功能测试")
+class TestBookRankModule:
+    """小说榜单查询模块测试类 - 包含新书榜单和更新榜单查询测试用例"""
     
-    @allure.title("小说搜索模块数据驱动测试")
+    @allure.title("小说榜单查询模块数据驱动测试")
     @pytest.mark.book
     @pytest.mark.parametrize("test_case", load_test_cases_for_parametrize(
-        get_test_data_path('book_search', 'book_search_module.yaml')  # YAML文件在test_data/book_search目录
+        get_test_data_path('book_rank', 'book_rank_module.yaml')  # YAML文件在test_data/book_rank目录
     ), ids=lambda x: x[0])
-    def test_book_search_module_cases(self, api_client, authenticated_client, test_case):
-        """小说搜索模块数据驱动测试 - 覆盖XSJS_API_01到XSJS_API_06"""
+    def test_book_rank_module_cases(self, api_client, authenticated_client, test_case):
+        """小说榜单查询模块数据驱动测试 - 覆盖新书榜单和更新榜单查询"""
         case_name, case_data = test_case
-        
-        # 跳过XSJS_API_10，由单独的测试方法处理
-        if case_data.get('id') == 'XSJS_API_10':
-            pytest.skip("XSJS_API_10由单独的测试方法处理")
         
         # 根据auth_required选择客户端
         if case_data.get('auth_required', False):
@@ -256,24 +252,3 @@ class TestBookSearchModule:
         
         # 执行测试用例
         execute_test_case(client, case_data)
-    
-    @allure.title("小说分类列表查询验证")
-    @pytest.mark.book
-    def test_book_category_list(self, api_client):
-        """小说分类列表查询验证 - XSJS_API_10"""
-        # 加载测试用例数据
-        test_cases = load_test_cases(
-            get_test_data_path('book_search', 'book_search_module.yaml')
-        )
-        
-        # 查找XSJS_API_10测试用例
-        target_case = None
-        for case in test_cases:
-            if case.get('id') == 'XSJS_API_10':
-                target_case = case
-                break
-        
-        assert target_case is not None, "未找到XSJS_API_10测试用例"
-        
-        # 执行测试用例
-        execute_test_case(api_client, target_case)

@@ -96,9 +96,9 @@ class NovelAPIClient:
         """GET请求"""
         return self.request('GET', endpoint, params=params)
 
-    def post(self, endpoint, data=None, files=None, form_data=False):
+    def post(self, endpoint, data=None, files=None, form_data=False, params=None):
         """POST请求"""
-        return self.request('POST', endpoint, data=data, files=files, form_data=form_data)
+        return self.request('POST', endpoint, data=data, files=files, form_data=form_data, params=params)
 
     def put(self, endpoint, data=None):
         """PUT请求"""

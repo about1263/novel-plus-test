@@ -1,0 +1,185 @@
+# 书架管理模块测试数据
+# 对应 YDSG_API_01 到 YDSG_API_03 测试用例
+
+test_cases:
+  # YDSG_API_01: 查询小说是否已加入书架 - 已加入情况
+  query_is_in_shelf_true:
+    id: "YDSG_API_01"
+    title: "查询小说是否已加入书架 - 已加入情况"
+    description: "查询已加入书架的小说，验证返回已加入状态"
+    request:
+      method: "GET"
+      endpoint: "/user/queryIsInShelf"
+      params:
+        bookId: 1262260513468559368  # 测试小说ID
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "inShelf"
+          description: "响应中应包含inShelf字段"
+        - check_type: "field_equals"
+          field: "inShelf"
+          value: true
+          description: "inShelf字段值应为true（已加入书架）"
+    tags: ["user", "book_shelf", "query", "functional", "positive"]
+    auth_required: true
+
+  # YDSG_API_01: 查询小说是否已加入书架 - 未加入情况
+  query_is_in_shelf_false:
+    id: "YDSG_API_01"
+    title: "查询小说是否已加入书架 - 未加入情况"
+    description: "查询未加入书架的小说，验证返回未加入状态"
+    request:
+      method: "GET"
+      endpoint: "/user/queryIsInShelf"
+      params:
+        bookId: 999  # 假设未加入书架的小说ID
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "inShelf"
+          description: "响应中应包含inShelf字段"
+        - check_type: "field_equals"
+          field: "inShelf"
+          value: false
+          description: "inShelf字段值应为false（未加入书架）"
+    tags: ["user", "book_shelf", "query", "functional", "negative"]
+    auth_required: true
+
+  # YDSG_API_01: 查询小说是否已加入书架 - 无效bookId
+  query_is_in_shelf_invalid_book_id:
+    id: "YDSG_API_01"
+    title: "查询小说是否已加入书架 - 无效bookId"
+    description: "使用无效的bookId查询，验证返回false表示不在书架"
+    request:
+      method: "GET"
+      endpoint: "/user/queryIsInShelf"
+      params:
+        bookId: -1  # 无效的bookId
+    expected:
+      code: "200"  # 期望code等于200
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "inShelf"
+          description: "响应中应包含inShelf字段"
+        - check_type: "field_equals"
+          field: "inShelf"
+          value: false
+          description: "inShelf字段值应为false（不在书架）"
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS"]
+          description: "响应消息应包含SUCCESS"
+    tags: ["user", "book_shelf", "query", "negative", "validation"]
+    auth_required: true
+
+  # YDSG_API_02: 分页查询书架 - 正常查询
+  list_book_shelf_by_page_normal:
+    id: "YDSG_API_02"
+    title: "分页查询书架 - 正常查询"
+    description: "正常分页查询书架，验证返回正确的分页数据"
+    request:
+      method: "GET"
+      endpoint: "/user/listBookShelfByPage"
+      params:
+        page: 1
+        pageSize: 10
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "书架列表不应为空"
+        - check_type: "field_exists"
+          field: "bookName"
+          description: "书架项应包含bookName字段"
+        - check_type: "field_exists"
+          field: "authorName"
+          description: "书架项应包含authorName字段"
+    tags: ["user", "book_shelf", "list", "pagination", "functional", "positive"]
+    auth_required: true
+
+  # YDSG_API_02: 分页查询书架 - 无效分页参数
+  list_book_shelf_by_page_invalid_params:
+    id: "YDSG_API_02"
+    title: "分页查询书架 - 无效分页参数"
+    description: "使用无效的分页参数查询，验证返回错误或默认值"
+    request:
+      method: "GET"
+      endpoint: "/user/listBookShelfByPage"
+      params:
+        page: -1  # 无效的页码
+        pageSize: 0  # 无效的页大小
+    expected:
+      code: "200"  # 可能返回200但数据为空，或返回错误码
+      data_exists: true
+      data_checks:
+        - check_type: "list_empty_or_minimal"
+          max_items: 0
+          description: "无效参数时应返回空列表或错误"
+    tags: ["user", "book_shelf", "list", "pagination", "error", "validation"]
+    auth_required: true
+
+  # YDSG_API_03: 加入书架 - 正常加入
+  add_to_book_shelf_normal:
+    id: "YDSG_API_03"
+    title: "加入书架 - 正常加入"
+    description: "将小说加入书架，验证加入成功"
+    request:
+      method: "POST"
+      endpoint: "/user/addToBookShelf"
+      params:
+        bookId: 1262260513468559368  # 测试小说ID
+        preContentId: 1  # 最后阅读的章节ID
+    expected:
+      code: "200"
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["成功", "加入", "added"]
+          description: "响应消息应包含成功提示"
+    tags: ["user", "book_shelf", "add", "functional", "positive"]
+    auth_required: true
+
+  # YDSG_API_03: 加入书架 - 重复加入
+  add_to_book_shelf_duplicate:
+    id: "YDSG_API_03"
+    title: "加入书架 - 重复加入"
+    description: "重复加入同一本小说到书架，验证返回错误或提示"
+    request:
+      method: "POST"
+      endpoint: "/user/addToBookShelf"
+      params:
+        bookId: 1262260513468559368  # 测试小说ID
+        preContentId: 1
+    expected:
+      code: "200"  # 服务端未做重复校验，返回200表示成功
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "响应消息应包含成功提示"
+    tags: ["user", "book_shelf", "add", "duplicate"]
+    auth_required: true
+
+  # YDSG_API_03: 加入书架 - 无效bookId
+  add_to_book_shelf_invalid_book_id:
+    id: "YDSG_API_03"
+    title: "加入书架 - 无效bookId"
+    description: "使用无效的bookId加入书架，服务端未校验bookId有效性"
+    request:
+      method: "POST"
+      endpoint: "/user/addToBookShelf"
+      params:
+        bookId: -1  # 无效的bookId
+        preContentId: 1
+    expected:
+      code: "200"  # 服务端未校验bookId有效性，返回200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["SUCCESS", "成功"]
+          description: "响应消息应包含成功提示"
+    tags: ["user", "book_shelf", "add", "validation"]
+    auth_required: true

@@ -1,5 +1,5 @@
 # 小说搜索模块测试数据
-# 对应 XSJS_API_01 到 XSJS_API_06 测试用例
+# 对应 XSJS_API_01 到 XSJS_API_06 和 XSJS_API_10 测试用例
 
 test_cases:
   # XSJS_API_01: 关键字搜索验证
@@ -157,4 +157,31 @@ test_cases:
           field: "authorName"
           description: "结果中应包含作者'lil_king'的作品"
     tags: ["book", "search", "author", "functional"]
+    auth_required: false
+
+  # XSJS_API_10: 小说分类列表查询验证
+  book_category_list_verification:
+    id: "XSJS_API_10"
+    title: "小说分类列表查询验证"
+    description: "验证查询小说分类列表，是否返回正确的分类数据"
+    request:
+      method: "GET"
+      endpoint: "/book/listBookCategory"
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "list_not_empty"
+          description: "分类列表不应为空"
+        - check_type: "field_exists"
+          field: "id"
+          description: "分类数据应包含id字段"
+        - check_type: "field_exists"
+          field: "name"
+          description: "分类数据应包含name字段"
+        - check_type: "keyword_in_results"
+          keyword: "玄幻奇幻"
+          field: "name"
+          description: "分类列表中应包含'玄幻奇幻'分类"
+    tags: ["book", "category", "functional"]
     auth_required: false

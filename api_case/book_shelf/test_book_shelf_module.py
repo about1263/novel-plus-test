@@ -42,7 +42,8 @@ def execute_test_case(client, test_case):
     elif method == 'POST':
         # 对于登录接口，使用form-data格式
         form_data = endpoint == '/user/login'
-        response = client.post(endpoint, data=data, form_data=form_data)
+        # 如果存在params（查询参数），也传递给POST请求
+        response = client.post(endpoint, data=data, params=params, form_data=form_data)
         # 打印响应内容
         print(f"测试用例 {test_case['id']} 响应内容:")
         print(json.dumps(response, indent=2, ensure_ascii=False, default=str))
@@ -214,13 +215,14 @@ def execute_test_case(client, test_case):
                 assert field, "字段存在检查缺少field参数"
                 
                 # 检查response_data（可能是字典）或list_data中的第一个元素
-                if isinstance(response_data, dict):
-                    assert field in response_data, f"响应数据中缺少字段'{field}'"
-                elif isinstance(list_data, list) and len(list_data) > 0:
+                # 优先检查list_data中的第一个元素（如果list_data是列表且非空）
+                if isinstance(list_data, list) and len(list_data) > 0:
                     # 检查列表中的第一个元素
                     first_item = list_data[0]
                     if isinstance(first_item, dict):
                         assert field in first_item, f"响应数据列表中第一个元素缺少字段'{field}'"
+                elif isinstance(response_data, dict):
+                    assert field in response_data, f"响应数据中缺少字段'{field}'"
                 log.info(f"检查通过: {check.get('description', f'字段{field}存在')}")
                 
             else:
@@ -230,23 +232,19 @@ def execute_test_case(client, test_case):
     log.info(f"测试用例 {test_case['id']} 执行成功: {test_case['title']}")
 
 
-@allure.feature("小说搜索模块")
-@allure.story("小说搜索功能测试")
-class TestBookSearchModule:
-    """小说搜索模块测试类 - 包含XSJS_API_01到XSJS_API_06所有测试用例，XSJS_API_10有单独的测试方法"""
+@allure.feature("书架管理模块")
+@allure.story("书架管理功能测试")
+class TestBookShelfModule:
+    """书架管理模块测试类 - 包含YDSG_API_01到YDSG_API_03所有测试用例"""
     
-    @allure.title("小说搜索模块数据驱动测试")
-    @pytest.mark.book
+    @allure.title("书架管理模块数据驱动测试")
+    @pytest.mark.user  # 书架管理属于用户模块，使用user标记
     @pytest.mark.parametrize("test_case", load_test_cases_for_parametrize(
-        get_test_data_path('book_search', 'book_search_module.yaml')  # YAML文件在test_data/book_search目录
+        get_test_data_path('book_shelf', 'book_shelf_module.yaml')
     ), ids=lambda x: x[0])
-    def test_book_search_module_cases(self, api_client, authenticated_client, test_case):
-        """小说搜索模块数据驱动测试 - 覆盖XSJS_API_01到XSJS_API_06"""
+    def test_book_shelf_module_cases(self, api_client, authenticated_client, test_case):
+        """书架管理模块数据驱动测试 - 覆盖YDSG_API_01到YDSG_API_03"""
         case_name, case_data = test_case
-        
-        # 跳过XSJS_API_10，由单独的测试方法处理
-        if case_data.get('id') == 'XSJS_API_10':
-            pytest.skip("XSJS_API_10由单独的测试方法处理")
         
         # 根据auth_required选择客户端
         if case_data.get('auth_required', False):
@@ -254,26 +252,54 @@ class TestBookSearchModule:
         else:
             client = api_client
         
+        # 执行测试用例前的预处理
+        # 对于加入书架的正常测试，先确保小说不在书架，并获取有效的章节ID
+        if case_data.get('id') == 'YDSG_API_03' and 'add_to_book_shelf_normal' in case_name:
+            # 获取bookId
+            request_data = case_data['request']
+            book_id = None
+            if request_data.get('method') == 'POST':
+                if 'params' in request_data:
+                    book_id = request_data['params'].get('bookId')
+                elif 'data' in request_data:
+                    book_id = request_data['data'].get('bookId')
+            elif request_data.get('method') == 'GET' and 'params' in request_data:
+                book_id = request_data['params'].get('bookId')
+            
+            if book_id:
+                try:
+                    # 先尝试移除书架中的小说（如果存在）
+                    client.delete(f'/user/removeFromBookShelf/{book_id}')
+                    print(f"预处理: 已尝试移除书架中的小说 {book_id}")
+                except Exception as e:
+                    # 移除失败可能是小说不在书架，这是预期的
+                    print(f"预处理: 移除小说 {book_id} 失败（可能不在书架）: {e}")
+                
+                # 获取小说的章节列表，使用第一个章节ID作为preContentId
+                try:
+                    chapters_response = client.get_book_chapters(book_id)
+                    if chapters_response.get('code') == '200' and 'data' in chapters_response:
+                        chapters_data = chapters_response['data']
+                        # 章节数据可能是列表或包含列表的字典
+                        if isinstance(chapters_data, list) and len(chapters_data) > 0:
+                            first_chapter = chapters_data[0]
+                            chapter_id = first_chapter.get('id')
+                            if chapter_id:
+                                # 更新测试数据中的preContentId
+                                if 'params' in request_data:
+                                    case_data['request']['params']['preContentId'] = chapter_id
+                                    print(f"预处理: 更新preContentId为章节ID {chapter_id}")
+                                elif 'data' in request_data:
+                                    case_data['request']['data']['preContentId'] = chapter_id
+                                    print(f"预处理: 更新preContentId为章节ID {chapter_id}")
+                                else:
+                                    print(f"预处理: 找到章节ID {chapter_id}，但测试数据中没有data/params字段")
+                        else:
+                            print(f"预处理: 章节数据格式不符合预期: {chapters_data}")
+                    else:
+                        print(f"预处理: 获取章节失败，响应: {chapters_response}")
+                except Exception as e:
+                    print(f"预处理: 获取章节列表失败: {e}")
+        
         # 执行测试用例
         execute_test_case(client, case_data)
-    
-    @allure.title("小说分类列表查询验证")
-    @pytest.mark.book
-    def test_book_category_list(self, api_client):
-        """小说分类列表查询验证 - XSJS_API_10"""
-        # 加载测试用例数据
-        test_cases = load_test_cases(
-            get_test_data_path('book_search', 'book_search_module.yaml')
-        )
-        
-        # 查找XSJS_API_10测试用例
-        target_case = None
-        for case in test_cases:
-            if case.get('id') == 'XSJS_API_10':
-                target_case = case
-                break
-        
-        assert target_case is not None, "未找到XSJS_API_10测试用例"
-        
-        # 执行测试用例
-        execute_test_case(api_client, target_case)
