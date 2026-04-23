@@ -1,0 +1,221 @@
+# 用户登录注册模块测试数据
+# 包含用户登录和用户注册功能测试用例
+
+test_cases:
+  # 用户登录测试用例
+  
+  # 正常登录测试 - 使用读者账号
+  user_login_normal:
+    id: "USER_API_01"
+    title: "用户正常登录测试"
+    description: "使用正确的用户名和密码进行登录，验证登录成功并返回token"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18723968509"
+        password: "zxcvbnm."
+    expected:
+      code: "200"
+      data_exists: true
+      data_checks:
+        - check_type: "field_exists"
+          field: "token"
+          description: "响应中应包含token字段"
+        - check_type: "response_message_contains"
+          keywords: ["成功", "登录成功"]
+          description: "响应消息应包含成功提示"
+    tags: ["user", "login", "functional", "positive"]
+    auth_required: false
+
+  # 用户名错误登录测试
+  user_login_wrong_username:
+    id: "USER_API_02"
+    title: "用户名错误登录测试"
+    description: "使用错误的用户名进行登录，验证登录失败"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "wrong_user_123"
+        password: "zxcvbnm."
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["错误", "失败", "不存在", "invalid"]
+          description: "响应消息应包含错误提示"
+    tags: ["user", "login", "negative", "error"]
+    auth_required: false
+
+  # 密码错误登录测试
+  user_login_wrong_password:
+    id: "USER_API_03"
+    title: "密码错误登录测试"
+    description: "使用错误的密码进行登录，验证登录失败"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18723968509"
+        password: "wrong_password"
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["错误", "失败", "密码", "invalid"]
+          description: "响应消息应包含错误提示"
+    tags: ["user", "login", "negative", "error"]
+    auth_required: false
+
+  # 用户名空值登录测试
+  user_login_empty_username:
+    id: "USER_API_04"
+    title: "用户名为空登录测试"
+    description: "用户名为空进行登录，验证登录失败"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: ""
+        password: "zxcvbnm."
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["错误", "失败", "空", "required"]
+          description: "响应消息应包含错误提示"
+    tags: ["user", "login", "negative", "validation"]
+    auth_required: false
+
+  # 密码空值登录测试
+  user_login_empty_password:
+    id: "USER_API_05"
+    title: "密码为空登录测试"
+    description: "密码为空进行登录，验证登录失败"
+    request:
+      method: "POST"
+      endpoint: "/user/login"
+      data:
+        username: "18723968509"
+        password: ""
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["错误", "失败", "空", "required"]
+          description: "响应消息应包含错误提示"
+    tags: ["user", "login", "negative", "validation"]
+    auth_required: false
+
+  # 用户注册测试用例
+  
+  # 正常用户注册测试（测试环境下可能返回错误，因为需要真实验证码）
+  user_register_normal:
+    id: "USER_API_06"
+    title: "用户正常注册测试"
+    description: "使用有效的手机号、密码和验证码进行注册，在测试环境下验证接口可访问性"
+    request:
+      method: "POST"
+      endpoint: "/user/register"
+      data:
+        username: "13800138000"  # 测试用手机号
+        password: "Test@123456"
+        velCode: "123456"  # 测试验证码，实际可能需要真实验证码
+        sessionId: "test_session_123"
+    expected:
+      code: "400"  # 测试环境下，由于验证码无效，期望返回400错误
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["非法", "验证码", "错误"]
+          description: "响应消息应包含相关错误提示"
+    tags: ["user", "register", "functional", "test-environment"]
+    auth_required: false
+
+  # 手机号已存在注册测试
+  user_register_existing_phone:
+    id: "USER_API_07"
+    title: "手机号已存在注册测试"
+    description: "使用已注册的手机号进行注册，验证注册失败"
+    request:
+      method: "POST"
+      endpoint: "/user/register"
+      data:
+        username: "18723968509"  # 已存在的手机号
+        password: "Test@123456"
+        velCode: "123456"
+        sessionId: "test_session_123"
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["已存在", "已注册", "exists", "registered"]
+          description: "响应消息应包含已存在提示"
+    tags: ["user", "register", "negative", "error"]
+    auth_required: false
+
+  # 密码格式错误注册测试
+  user_register_invalid_password:
+    id: "USER_API_08"
+    title: "密码格式错误注册测试"
+    description: "使用不符合要求的密码进行注册，验证注册失败"
+    request:
+      method: "POST"
+      endpoint: "/user/register"
+      data:
+        username: "13800138001"
+        password: "123"  # 密码太短
+        velCode: "123456"
+        sessionId: "test_session_123"
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["密码", "格式", "不符合", "invalid"]
+          description: "响应消息应包含密码格式错误提示"
+    tags: ["user", "register", "negative", "validation"]
+    auth_required: false
+
+  # 验证码错误注册测试
+  user_register_wrong_verify_code:
+    id: "USER_API_09"
+    title: "验证码错误注册测试"
+    description: "使用错误的验证码进行注册，验证注册失败"
+    request:
+      method: "POST"
+      endpoint: "/user/register"
+      data:
+        username: "13800138002"
+        password: "Test@123456"
+        velCode: "999999"  # 错误的验证码
+        sessionId: "test_session_123"
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["验证码", "错误", "无效", "invalid"]
+          description: "响应消息应包含验证码错误提示"
+    tags: ["user", "register", "negative", "error"]
+    auth_required: false
+
+  # 必填字段缺失注册测试
+  user_register_missing_required_fields:
+    id: "USER_API_10"
+    title: "必填字段缺失注册测试"
+    description: "缺少必填字段进行注册，验证注册失败"
+    request:
+      method: "POST"
+      endpoint: "/user/register"
+      data:
+        username: "13800138003"
+        # 缺少password字段
+        velCode: "123456"
+        sessionId: "test_session_123"
+    expected:
+      code: "!200"  # 期望code不等于200
+      data_checks:
+        - check_type: "response_message_contains"
+          keywords: ["缺少", "必填", "required", "missing"]
+          description: "响应消息应包含字段缺失提示"
+    tags: ["user", "register", "negative", "validation"]
+    auth_required: false
